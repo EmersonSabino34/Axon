@@ -12,8 +12,9 @@ const links = [
   { href: "/contato", label: "Contato" },
 ];
 
-export function Header() {
+export function Header({ signedIn }: { signedIn: boolean }) {
   const pathname = usePathname();
+  const items = [...links, signedIn ? { href: "/conta", label: "Minha conta" } : { href: "/entrar", label: "Entrar" }];
   // O menu guarda a página em que foi aberto, e fecha sozinho ao mudar de página.
   const [openOn, setOpenOn] = useState<string | null>(null);
   const open = openOn === pathname;
@@ -29,7 +30,7 @@ export function Header() {
           {open ? "Fechar" : "Menu"}
         </button>
         <nav id="menu" className={`menu${open ? " open" : ""}`} aria-label="Principal">
-          {links.map((l) => (
+          {items.map((l) => (
             <Link key={l.href} href={l.href} aria-current={pathname.startsWith(l.href) && l.href !== "/" ? "page" : undefined} onClick={() => setOpen(false)}>
               {l.label}
             </Link>

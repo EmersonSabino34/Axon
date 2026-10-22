@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ContactForm } from "@/components/ContactForm";
+import { getCustomer } from "@/lib/auth";
 import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 
@@ -13,7 +14,7 @@ type Props = { searchParams: Promise<{ produto?: string }> };
 
 export default async function ContatoPage({ searchParams }: Props) {
   const { produto = "" } = await searchParams;
-  const [site, products] = await Promise.all([getSettings(), getProducts()]);
+  const [site, products, customer] = await Promise.all([getSettings(), getProducts(), getCustomer()]);
   const note = site.whatsapp.startsWith("550000") ? <em>Dado provisório, edite no painel</em> : null;
   return (
     <>
@@ -39,7 +40,7 @@ export default async function ContatoPage({ searchParams }: Props) {
               <div><span>Horário</span><strong>{site.hours}</strong></div>
             </div>
           </div>
-          <ContactForm products={products.map((p) => ({ name: p.name, label: p.label }))} defaultProduct={produto} />
+          <ContactForm products={products.map((p) => ({ name: p.name, label: p.label }))} defaultProduct={produto} customer={customer && { name: customer.name, phone: customer.phone }} />
         </div>
       </section>
     </>

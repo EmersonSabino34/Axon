@@ -303,6 +303,13 @@ p { margin: 0; }
 .contact-done p { color: var(--tinta-suave); }
 .btn:disabled { opacity: 0.6; cursor: wait; }
 
+/* Conta do cliente: usa o layout e os campos do formulário de contato */
+.account-text { color: var(--tinta-suave); margin: 18px 0 28px; max-width: 30em; }
+.account-forms { display: flex; flex-direction: column; gap: 32px; }
+.account-forms h3 { grid-column: 1 / -1; font-size: 1.5rem; color: var(--verde); }
+.account-out { margin-top: 32px; }
+.form-note.ok { color: var(--verde); }
+
 /* Versão clara: menos verde em blocos, verde só em texto, botões e frascos */
 .values { background: var(--creme-2); color: var(--tinta); border-block: 1px solid var(--bege); }
 .values-inner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding-block: 22px; }

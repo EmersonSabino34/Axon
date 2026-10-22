@@ -11,6 +11,7 @@ const I = {
   prod: <><path d="M9 3h6v3H9z" /><path d="M7 6h10l1 3v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9z" /><path d="M9 13h6" /></>,
   orders: <><path d="M6 2h12l2 4v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z" /><path d="M4 6h16M9 11h6M9 15h6" /></>,
   msgs: <path d="M4 5h16v11H8l-4 4z" />,
+  people: <><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20a6.5 6.5 0 0 1 13 0" /><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5" /></>,
   cfg: <><circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2" /></>,
 };
 
@@ -25,6 +26,7 @@ export function Sidebar({ email, unread }: { email: string; unread: number }) {
     { href: "/admin", label: "Dashboard", icon: I.dash, exact: true },
     { href: "/admin/pedidos", label: "Pedidos", icon: I.orders },
     { href: "/admin/produtos", label: "Produtos", icon: I.prod },
+    { href: "/admin/clientes", label: "Clientes", icon: I.people },
     { href: "/admin/mensagens", label: "Mensagens", icon: I.msgs, count: unread },
     { href: "/admin/configuracoes", label: "Configurações", icon: I.cfg },
   ];

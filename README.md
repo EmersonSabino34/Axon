@@ -9,12 +9,14 @@ Site da AXON Suplementos Naturais feito em **Next.js 16** (App Router, TypeScrip
 - Os 8 produtos: Lugol, Própolis, Cravinho, Desintoxicação pelos Pés, Emagrecedor, Foco Estudos, Libido Feminina e Desparasitante, com as fotos dos frascos em `public/produtos` (fundo transparente). Produtos sem foto mostram uma embalagem desenhada em SVG.
 - Botão "Comprar pelo WhatsApp" com a mensagem já escrita.
 - Formulário de contato: grava a mensagem no painel e oferece continuar no WhatsApp.
+- Conta de cliente: cadastro (`/cadastro`), login (`/entrar`) e Minha conta (`/conta`), onde o cliente edita os dados e troca a senha. Para quem entrou, o formulário de contato já vem preenchido.
 - SEO: títulos e descrições por página, `sitemap.xml`, `robots.txt`, favicon com o símbolo.
 
 **Painel (`/admin`)**
 - **Dashboard:** faturamento, pedidos, ticket médio e cliques no WhatsApp dos últimos 30 dias, com comparação ao período anterior. Também tem o gráfico de faturamento diário, os mais vendidos, os mais vistos, os pedidos por status, os últimos pedidos e o estoque baixo.
 - **Pedidos:** lista com filtro por status e busca, registo de novos pedidos (o total é calculado e o estoque descontado), mudança de status (cancelar devolve o estoque), observações e atalho para o WhatsApp do cliente.
 - **Produtos:** preço, estoque (botões + e −), publicar ou ocultar, edição de todos os textos, criação de novos produtos.
+- **Clientes:** quem criou conta no site, com e-mail, telefone, data do cadastro e atalho para o WhatsApp.
 - **Mensagens:** o que chega pelo formulário de contato, para marcar como lida, responder no WhatsApp ou excluir.
 - **Configurações:** WhatsApp, e-mail, Instagram e horário que aparecem no site, troca de senha e novos administradores.
 
@@ -45,8 +47,8 @@ Para ver o dashboard com dados de exemplo: `npm run seed:demo`. Não use em prod
 ## Estrutura
 
 ```
-app/(site)/          páginas públicas (início, produtos, sobre, contato)
-app/admin/           painel: login, dashboard, pedidos, produtos, mensagens, configurações
+app/(site)/          páginas públicas (início, produtos, sobre, contato, entrar, cadastro, conta)
+app/admin/           painel: login, dashboard, pedidos, produtos, clientes, mensagens, configurações
 app/admin/actions.ts todas as ações do painel (server actions)
 app/api/track/       regista visualizações e cliques no WhatsApp
 components/          Header, Footer, Logo, Pack (embalagens), cards, formulários

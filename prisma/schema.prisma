@@ -87,6 +87,16 @@ model Setting {
   value String
 }
 
+// Clientes que criam conta no site (/cadastro). Separados dos administradores.
+model Customer {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  phone        String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
 model AdminUser {
   id           String   @id @default(cuid())
   email        String   @unique

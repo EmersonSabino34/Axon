@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { sendContact, type ContactState } from "@/app/(site)/contato/actions";
 
-export function ContactForm({ products, defaultProduct = "" }: { products: { name: string; label: string }[]; defaultProduct?: string }) {
+export function ContactForm({ products, defaultProduct = "", customer }: { products: { name: string; label: string }[]; defaultProduct?: string; customer?: { name: string; phone: string | null } | null }) {
   const [state, action, pending] = useActionState<ContactState, FormData>(sendContact, { ok: false });
 
   if (state.ok) {
@@ -20,11 +20,11 @@ export function ContactForm({ products, defaultProduct = "" }: { products: { nam
     <form className="contact-form" action={action} noValidate>
       <label>
         Nome
-        <input id="f-nome" name="nome" autoComplete="name" required />
+        <input id="f-nome" name="nome" autoComplete="name" defaultValue={customer?.name} required />
       </label>
       <label>
         Telefone
-        <input id="f-tel" name="telefone" type="tel" autoComplete="tel" />
+        <input id="f-tel" name="telefone" type="tel" autoComplete="tel" defaultValue={customer?.phone ?? undefined} />
       </label>
       <label className="full">
         Produto de interesse

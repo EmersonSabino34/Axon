@@ -23,12 +23,12 @@ export async function login(_: FormState, form: FormData): Promise<FormState> {
   const password = str(form, "password", 200);
   const user = await db.adminUser.findUnique({ where: { email } });
   if (!user || !verifyPassword(password, user.passwordHash)) return { error: "E-mail ou senha incorretos." };
-  await createSession(user.id);
+  await createSession(user.id, "admin");
   redirect("/admin");
 }
 
 export async function logout() {
-  await destroySession();
+  await destroySession("admin");
   redirect("/admin/login");
 }
 
