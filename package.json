@@ -1,26 +1,33 @@
 {
-  "name": "axon-sup",
-  "version": "0.1.0",
+  "name": "axon-site",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "tsx --env-file=.env prisma/seed.ts",
+    "seed:demo": "tsx --env-file=.env prisma/demo.ts",
+    "db:push": "prisma db push",
+    "postinstall": "prisma generate",
+    "setup": "prisma db push && npm run seed"
   },
   "dependencies": {
-    "next": "16.4.2",
-    "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "@prisma/client": "^6.19.3",
+    "next": "16.4.0",
+    "prisma": "^6.19.3",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
-    "@tailwindcss/turbopack": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.4.2",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "@types/node": "22.10.2",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.0",
+    "tsx": "^4.19.2",
+    "typescript": "5.7.2"
   }
 }
