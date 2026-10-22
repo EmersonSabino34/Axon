@@ -1,12 +1,15 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { createSession, destroySession, getAdmin, hashPassword, requireAdmin, verifyPassword } from "@/lib/auth";
+import { createPasswordReset, createSession, destroySession, getAdmin, hashPassword, requireAdmin, RESET_HOURS, verifyPassword } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { parseBrl } from "@/lib/format";
 import { benefitKeys } from "@/lib/products";
+import { whatsappLink } from "@/lib/settings";
 import { settingFields } from "@/lib/settings-defaults";
+import { site } from "@/lib/site";
 
 export type FormState = { error?: string; ok?: string };
 
@@ -95,10 +98,17 @@ export async function adjustStock(form: FormData) {
 
 /* Pedidos */
 
+// Conta de cliente escolhida no formulário. Vazio (ou um id que não existe) deixa o pedido sem conta.
+async function linkedCustomer(form: FormData) {
+  const id = str(form, "customerId", 40);
+  return id ? db.customer.findUnique({ where: { id } }) : null;
+}
+
 export async function createOrder(_: FormState, form: FormData): Promise<FormState> {
   await requireAdmin();
-  const customerName = str(form, "customerName", 120);
-  const phone = str(form, "phone", 40);
+  const customer = await linkedCustomer(form);
+  const customerName = str(form, "customerName", 120) || customer?.name || "";
+  const phone = str(form, "phone", 40) || customer?.phone || "";
   if (!customerName || !phone) return { error: "Preencha o nome e o telefone do cliente." };
 
   const lines: { productId: string; quantity: number }[] = [];
@@ -124,7 +134,8 @@ export async function createOrder(_: FormState, form: FormData): Promise<FormSta
       data: {
         number: (last?.number ?? 1000) + 1,
         customerName, phone,
-        email: str(form, "email", 160) || null,
+        customerId: customer?.id ?? null,
+        email: str(form, "email", 160) || customer?.email || null,
         city: str(form, "city", 120) || null,
         status: str(form, "status", 20) || "novo",
         notes: str(form, "notes") || null,
@@ -145,6 +156,7 @@ export async function updateOrderStatus(form: FormData) {
   const status = str(form, "status", 20);
   const order = await db.order.findUnique({ where: { id }, include: { items: true } });
   if (!order) return;
+  const customer = form.has("customerId") ? await linkedCustomer(form) : undefined;
   await db.$transaction(async (tx) => {
     // Cancelar devolve o estoque; reabrir um cancelado volta a descontar.
     if (status === "cancelado" && order.status !== "cancelado") {
@@ -152,7 +164,14 @@ export async function updateOrderStatus(form: FormData) {
     } else if (order.status === "cancelado" && status !== "cancelado") {
       for (const it of order.items) await tx.product.update({ where: { id: it.productId }, data: { stock: { decrement: it.quantity } } });
     }
-    await tx.order.update({ where: { id }, data: { status, notes: form.has("notes") ? str(form, "notes") || null : undefined } });
+    await tx.order.update({
+      where: { id },
+      data: {
+        status,
+        notes: form.has("notes") ? str(form, "notes") || null : undefined,
+        customerId: customer === undefined ? undefined : (customer?.id ?? null),
+      },
+    });
   });
   revalidatePath(`/admin/pedidos/${id}`);
   revalidatePath("/admin/pedidos");
@@ -172,6 +191,22 @@ export async function deleteOrder(form: FormData) {
     });
   }
   redirect("/admin/pedidos");
+}
+
+/* Clientes */
+
+export type ResetLinkState = FormState & { link?: string; whatsapp?: string | null };
+
+// Gera o link de nova senha para o administrador mandar pelo WhatsApp. Um link novo invalida o anterior.
+export async function createResetLink(_: ResetLinkState, form: FormData): Promise<ResetLinkState> {
+  await requireAdmin();
+  const customer = await db.customer.findUnique({ where: { id: str(form, "id", 40) } });
+  if (!customer) return { error: "Cliente não encontrado." };
+  const token = await createPasswordReset(customer.id);
+  const link = `${(await headers()).get("origin") ?? site.url}/nova-senha?token=${token}`;
+  const digits = (customer.phone ?? "").replace(/\D/g, "");
+  const text = `Olá, ${customer.name.split(" ")[0]}! Aqui é da AXON. Para criar uma nova senha na sua conta, abra este link (vale por ${RESET_HOURS} horas): ${link}`;
+  return { link, whatsapp: digits.length >= 10 ? whatsappLink(digits.startsWith("55") ? digits : `55${digits}`, text) : null };
 }
 
 /* Mensagens */

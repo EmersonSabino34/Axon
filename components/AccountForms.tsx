@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { changePassword, saveAccount, signIn, signUp, type AccountState } from "@/app/(site)/conta/actions";
+import { changePassword, resetPassword, saveAccount, signIn, signUp, type AccountState } from "@/app/(site)/conta/actions";
 
 function Submit({ pending, label, pendingLabel, state }: { pending: boolean; label: string; pendingLabel: string; state: AccountState }) {
   return (
@@ -98,6 +98,24 @@ export function PasswordForm() {
         <input id="s-confirmar" name="confirmar" type="password" autoComplete="new-password" minLength={8} required />
       </label>
       <Submit pending={pending} label="Trocar senha" pendingLabel="Trocando…" state={state} />
+    </form>
+  );
+}
+
+export function ResetPasswordForm({ token }: { token: string }) {
+  const [state, action, pending] = useActionState<AccountState, FormData>(resetPassword, {});
+  return (
+    <form className="contact-form" action={action}>
+      <input type="hidden" name="token" value={token} />
+      <label>
+        Nova senha (mín. 8 caracteres)
+        <input id="r-nova" name="nova" type="password" autoComplete="new-password" minLength={8} required />
+      </label>
+      <label>
+        Repita a nova senha
+        <input id="r-confirmar" name="confirmar" type="password" autoComplete="new-password" minLength={8} required />
+      </label>
+      <Submit pending={pending} label="Salvar nova senha" pendingLabel="Salvando…" state={state} />
     </form>
   );
 }

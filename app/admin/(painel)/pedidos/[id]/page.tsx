@@ -8,8 +8,16 @@ import { whatsappLink } from "@/lib/settings";
 export const metadata = { title: "Pedido" };
 
 export default async function OrderPage({ params }: { params: Promise<{ id: string }> }) {
-  const o = await db.order.findUnique({ where: { id: (await params).id }, include: { items: { include: { product: true } } } });
+  const [o, customers] = await Promise.all([
+    db.order.findUnique({ where: { id: (await params).id }, include: { items: { include: { product: true } }, customer: { select: { name: true, email: true } } } }),
+    db.customer.findMany({ orderBy: { name: "asc" }, take: 500, select: { id: true, name: true, email: true, phone: true } }),
+  ]);
   if (!o) notFound();
+  // Sugere primeiro as contas com o mesmo e-mail ou telefone do pedido.
+  const tail = (phone: string | null) => (phone ?? "").replace(/\D/g, "").slice(-10);
+  const sameContact = (c: (typeof customers)[number]) =>
+    (!!o.email && c.email === o.email.toLowerCase()) || (tail(c.phone).length === 10 && tail(c.phone) === tail(o.phone));
+  const options = [...customers.filter(sameContact), ...customers.filter((c) => !sameContact(c))];
   const digits = o.phone.replace(/\D/g, "");
   const wa = digits.length >= 10 ? whatsappLink(digits.startsWith("55") ? digits : `55${digits}`, `Olá, ${o.customerName.split(" ")[0]}! Aqui é da AXON, sobre o seu pedido #${o.number}.`) : null;
   return (
@@ -54,6 +62,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
             {o.email && <><dt>E-mail</dt><dd>{o.email}</dd></>}
             {o.city && <><dt>Cidade</dt><dd>{o.city}</dd></>}
             <dt>Canal</dt><dd>{o.channel === "whatsapp" ? "WhatsApp" : o.channel}</dd>
+            <dt>Conta no site</dt><dd>{o.customer ? <Link href="/admin/clientes">{o.customer.name} · {o.customer.email}</Link> : "Sem conta"}</dd>
           </dl>
           <h2 style={{ marginTop: 26 }}>Atualizar</h2>
           <form className="form" action={updateOrderStatus} style={{ gridTemplateColumns: "1fr" }}>
@@ -64,6 +73,12 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
               </select>
             </label>
             <label>Observações<textarea id="os-notes" name="notes" defaultValue={o.notes ?? ""} rows={4} /></label>
+            <label>Conta do cliente no site<small>O pedido aparece em Minha conta desse cliente.</small>
+              <select id="os-customer" name="customerId" defaultValue={o.customerId ?? ""}>
+                <option value="">Sem conta</option>
+                {options.map((c) => <option key={c.id} value={c.id}>{c.name} · {c.email}{sameContact(c) ? " · mesmo contato do pedido" : ""}</option>)}
+              </select>
+            </label>
             <div className="form-bar"><button className="btn dark" type="submit">Salvar</button></div>
           </form>
           <form action={deleteOrder} style={{ marginTop: 20 }}>

@@ -86,6 +86,10 @@ table.t { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
 .inline { display: inline; }
 .icon-btn { background: none; border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px; cursor: pointer; font: 500 0.8rem var(--sans); color: var(--verde); }
 .icon-btn:hover { border-color: var(--verde); }
+.cust-ops { display: flex; gap: 6px; justify-content: flex-end; align-items: flex-start; }
+.reset-link { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.reset-out { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; width: 320px; max-width: 100%; white-space: normal; }
+.reset-out input { width: 100%; font: 400 0.78rem var(--sans); color: var(--tinta); background: #FDFBF7; border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
 .empty { color: var(--muted); padding: 24px 0; text-align: center; }
 
 .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }

@@ -7,7 +7,10 @@ import { brl, orderStatuses } from "@/lib/format";
 export const metadata = { title: "Registrar pedido" };
 
 export default async function NewOrder() {
-  const products = await db.product.findMany({ orderBy: { sortOrder: "asc" } });
+  const [products, customers] = await Promise.all([
+    db.product.findMany({ orderBy: { sortOrder: "asc" } }),
+    db.customer.findMany({ orderBy: { name: "asc" }, take: 500, select: { id: true, name: true, email: true } }),
+  ]);
   return (
     <>
       <div className="adm-head">
@@ -16,8 +19,14 @@ export default async function NewOrder() {
       </div>
       <section className="panel">
         <ActionForm action={createOrder} submit="Registrar pedido">
-          <label>Nome do cliente<input id="o-name" name="customerName" required /></label>
-          <label>Telefone / WhatsApp<input id="o-phone" name="phone" type="tel" required /></label>
+          <label className="full">Conta do cliente no site<small>Opcional. Com uma conta escolhida, o pedido aparece em Minha conta e os campos em branco usam os dados dela.</small>
+            <select id="o-customer" name="customerId" defaultValue="">
+              <option value="">Sem conta</option>
+              {customers.map((c) => <option key={c.id} value={c.id}>{c.name} · {c.email}</option>)}
+            </select>
+          </label>
+          <label>Nome do cliente<input id="o-name" name="customerName" /></label>
+          <label>Telefone / WhatsApp<input id="o-phone" name="phone" type="tel" /></label>
           <label>E-mail<small>Opcional</small><input id="o-email" name="email" type="email" /></label>
           <label>Cidade / UF<input id="o-city" name="city" /></label>
           <div className="full field">

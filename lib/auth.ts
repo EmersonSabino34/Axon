@@ -1,5 +1,5 @@
 import "server-only";
-import { createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { db } from "./db";
@@ -88,5 +88,24 @@ export async function getCustomer() {
 export async function requireCustomer() {
   const customer = await getCustomer();
   if (!customer) redirect("/entrar");
+  return customer;
+}
+
+/* Link de nova senha: o código só existe no link; na base fica o hash dele. */
+
+export const RESET_HOURS = 24;
+const resetHash = (token: string) => createHash("sha256").update(token).digest("hex");
+
+export async function createPasswordReset(customerId: string) {
+  const token = randomBytes(32).toString("base64url");
+  const resetExpires = new Date(Date.now() + RESET_HOURS * 60 * 60 * 1000);
+  await db.customer.update({ where: { id: customerId }, data: { resetTokenHash: resetHash(token), resetExpires } });
+  return token;
+}
+
+export async function findPasswordReset(token: string) {
+  if (!token) return null;
+  const customer = await db.customer.findUnique({ where: { resetTokenHash: resetHash(token) }, select: { id: true, name: true, resetExpires: true } });
+  if (!customer?.resetExpires || customer.resetExpires.getTime() < Date.now()) return null;
   return customer;
 }

@@ -50,6 +50,9 @@ model Order {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   items        OrderItem[]
+  // Conta do cliente no site, ligada pelo administrador. O pedido aparece em /conta.
+  customerId   String?
+  customer     Customer?   @relation(fields: [customerId], references: [id], onDelete: SetNull)
 }
 
 model OrderItem {
@@ -89,12 +92,16 @@ model Setting {
 
 // Clientes que criam conta no site (/cadastro). Separados dos administradores.
 model Customer {
-  id           String   @id @default(cuid())
-  name         String
-  email        String   @unique
-  phone        String?
-  passwordHash String
-  createdAt    DateTime @default(now())
+  id             String    @id @default(cuid())
+  name           String
+  email          String    @unique
+  phone          String?
+  passwordHash   String
+  createdAt      DateTime  @default(now())
+  // Link de nova senha gerado no painel: guarda só o hash do código, com validade.
+  resetTokenHash String?   @unique
+  resetExpires   DateTime?
+  orders         Order[]
 }
 
 model AdminUser {

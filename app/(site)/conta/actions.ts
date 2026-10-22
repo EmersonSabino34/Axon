@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createSession, destroySession, getCustomer, hashPassword, verifyPassword } from "@/lib/auth";
+import { createSession, destroySession, findPasswordReset, getCustomer, hashPassword, verifyPassword } from "@/lib/auth";
 import { db } from "@/lib/db";
 
 // `fields` devolve o que foi digitado, para o formulário não se apagar quando há erro.
@@ -65,6 +65,18 @@ export async function changePassword(_: AccountState, form: FormData): Promise<A
   if (!user || !verifyPassword(str(form, "atual"), user.passwordHash)) return { error: "A senha atual está incorreta." };
   if (next.length < 8) return { error: "A nova senha precisa de pelo menos 8 caracteres." };
   if (next !== str(form, "confirmar")) return { error: "As duas senhas novas não são iguais." };
-  await db.customer.update({ where: { id: user.id }, data: { passwordHash: hashPassword(next) } });
+  await db.customer.update({ where: { id: user.id }, data: { passwordHash: hashPassword(next), resetTokenHash: null, resetExpires: null } });
   return { ok: "Senha alterada." };
+}
+
+// Nova senha pelo link que a AXON enviou no WhatsApp. O link só vale uma vez.
+export async function resetPassword(_: AccountState, form: FormData): Promise<AccountState> {
+  const customer = await findPasswordReset(str(form, "token"));
+  if (!customer) return { error: "Este link não vale mais. Peça um novo à AXON pelo WhatsApp." };
+  const next = str(form, "nova");
+  if (next.length < 8) return { error: "A nova senha precisa de pelo menos 8 caracteres." };
+  if (next !== str(form, "confirmar")) return { error: "As duas senhas novas não são iguais." };
+  await db.customer.update({ where: { id: customer.id }, data: { passwordHash: hashPassword(next), resetTokenHash: null, resetExpires: null } });
+  await createSession(customer.id, "customer");
+  redirect("/conta?senha=nova");
 }
