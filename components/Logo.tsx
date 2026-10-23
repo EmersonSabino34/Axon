@@ -7,6 +7,7 @@ export function Logo({ size = 56, full = false, tone = "dark", className }: { si
   const word = tone === "dark" ? "#10291F" : "#D6AE65";
   const sub = tone === "dark" ? "#55625B" : "#E8DCC6";
   return (
+
     <svg className={className} width={size} height={size} viewBox="0 0 120 120" role="img" aria-label="AXON Suplementos Naturais">
       <circle cx="60" cy="60" r="57" fill="none" stroke={ring} strokeWidth="1.4" />
       <circle cx="60" cy="60" r="52" fill="none" stroke="#D6AE65" strokeOpacity=".7" strokeWidth=".6" />
