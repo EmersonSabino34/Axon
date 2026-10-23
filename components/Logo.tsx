@@ -1,5 +1,6 @@
 import { SproutPaths } from "./Sprout";
 
+
 // Emblema circular da AXON: anel duplo, símbolo botânico e nome. "full" acrescenta a linha "Suplementos naturais".
 export function Logo({ size = 56, full = false, tone = "dark", className }: { size?: number; full?: boolean; tone?: "dark" | "light"; className?: string }) {
   const ring = tone === "dark" ? "#10291F" : "#D6AE65";
