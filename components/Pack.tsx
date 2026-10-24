@@ -1,7 +1,6 @@
 import type { Product } from "@/lib/products";
 import { SproutPaths } from "./Sprout";
 
-
 const GOLD = "#D6AE65";
 const CREAM = "#E8DCC6";
 
