@@ -4,7 +4,6 @@ import { SproutPaths } from "./Sprout";
 const GOLD = "#D6AE65";
 const CREAM = "#E8DCC6";
 
-
 // Rótulo comum às três embalagens: selo circular com o símbolo, nome do produto e linha do rótulo.
 function Label({ p, top, width, id }: { p: Product; top: number; width: number; id: string }) {
   const cx = 80;
