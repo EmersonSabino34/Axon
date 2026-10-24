@@ -11,6 +11,7 @@ function Label({ p, top, width, id }: { p: Product; top: number; width: number; 
   const cx = 80;
   const nameSize = Math.min(17, (width - 14) / (p.name.length * 0.78));
   return (
+
     <g>
       <circle cx={cx} cy={top + 22} r={17} fill="none" stroke={`url(#${id}-gold)`} strokeWidth={1.2} />
       <circle cx={cx} cy={top + 22} r={14} fill="none" stroke={GOLD} strokeOpacity={0.4} strokeWidth={0.5} />
