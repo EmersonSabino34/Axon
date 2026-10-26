@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
-import type { OrderStatus, PaymentMethod } from "@/lib/commerce";
+import { MBWAY_TIMEOUT_MINUTES, type OrderStatus, type PaymentMethod } from "@/lib/commerce";
 import { getDb, nowIso } from "./db";
 import type { User } from "./users";
 
@@ -245,6 +245,24 @@ export function markOrderFailed(number: string, reason: string) {
     .prepare("UPDATE orders SET status = 'falhado', payment_error = ?, updated_at = ? WHERE id = ?")
     .run(reason, nowIso(), order.id);
   logPaymentEvent(order.id, "falhada", reason);
+}
+
+/**
+ * Fecha o pagamento em curso quando o prazo passou: pedido MB WAY sem resposta ou referência Multibanco expirada.
+ * O cliente pode então tentar de novo; um pagamento que ainda chegue depois continua a ser aceite.
+ */
+export function expireOverduePayment(number: string): Order | null {
+  const order = getOrderByNumber(number);
+  if (order?.status !== "pendente") return order;
+  const now = Date.now();
+  if (order.paymentMethod === "mbway" && now - new Date(order.updatedAt).getTime() > (MBWAY_TIMEOUT_MINUTES + 1) * 60_000) {
+    markOrderFailed(number, "O pedido MB WAY expirou sem ser aprovado.");
+  } else if (order.paymentMethod === "multibanco" && order.mbExpiresAt && now > new Date(order.mbExpiresAt).getTime()) {
+    markOrderFailed(number, "A referência Multibanco expirou sem ser paga.");
+  } else {
+    return order;
+  }
+  return getOrderByNumber(number);
 }
 
 export function setOrderStatus(number: string, status: "enviado" | "cancelado", note: string | null) {

@@ -219,6 +219,7 @@ export function OrderView({ order, token, isNew, retryMethods, testMode }: Order
           {pending && order.paymentMethod === "cartao" && (
             <section className="checkout-card pay-card">
               <p>Estamos a aguardar a confirmação do banco. Esta página atualiza-se sozinha dentro de momentos.</p>
+              <p className="form-section__note">Se saiu da página do cartão sem concluir o pagamento, pode tentar de novo abaixo.</p>
             </section>
           )}
 
@@ -248,9 +249,9 @@ export function OrderView({ order, token, isNew, retryMethods, testMode }: Order
             </section>
           )}
 
-          {pending && retryMethods.length > 1 && (
+          {pending && (retryMethods.length > 1 || order.paymentMethod === "cartao") && (
             <details className="checkout-card other-method">
-              <summary>Prefere pagar de outra forma?</summary>
+              <summary>{order.paymentMethod === "cartao" ? "Tentar de novo ou pagar de outra forma" : "Prefere pagar de outra forma?"}</summary>
               <RetryForm order={order} token={token} methods={retryMethods} />
             </details>
           )}

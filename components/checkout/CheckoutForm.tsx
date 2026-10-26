@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useActionState, useRef, useState, useSyncExternalStore } from "react";
 import { placeOrder } from "@/app/(compra)/actions";
-import { paymentMethodLabels, shippingFor, type CommerceSettings, type PaymentMethod } from "@/lib/commerce";
+import { MBWAY_TIMEOUT_MINUTES, paymentMethodLabels, shippingFor, type CommerceSettings, type PaymentMethod } from "@/lib/commerce";
 import { getPhotos } from "@/lib/collection";
 import { formatPrice } from "@/lib/currency";
 import type { CompanyDetails } from "@/lib/site-config";
@@ -179,7 +179,7 @@ export function CheckoutForm({ methods, commerce, testMode, defaults, signedIn, 
                 type="tel"
                 inputMode="tel"
                 placeholder="Se for diferente do telemóvel de contacto"
-                hint="Vai receber o pedido de pagamento na app. Tem 5 minutos para o aprovar."
+                hint={`Vai receber o pedido de pagamento na app. Tem ${MBWAY_TIMEOUT_MINUTES} minutos para o aprovar.`}
                 error={errors.mbwayPhone}
               />
             )}

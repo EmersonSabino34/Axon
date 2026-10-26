@@ -51,9 +51,12 @@ export function Newsletter() {
         <div className="newsletter__intro">
           <p className="eyebrow eyebrow--light">Newsletter</p>
           <h2 id="newsletter-title" className="section-title section-title--light">
-            Novidades AXON, sem excesso.
+            Seja dos primeiros a saber.
           </h2>
-          <p className="newsletter__text">Receba novidades sobre a coleção, os lançamentos e a marca.</p>
+          <p className="newsletter__text">
+            Lançamentos, novidades da coleção e as histórias por trás de cada frasco, diretamente no seu e-mail. Sem
+            excesso.
+          </p>
         </div>
 
         <form className="newsletter-form" noValidate onSubmit={onSubmit}>

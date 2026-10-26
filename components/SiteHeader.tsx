@@ -124,6 +124,7 @@ export function SiteHeader() {
           </button>
         </div>
       </div>
+      <span className="site-header__progress" aria-hidden="true" />
     </header>
   );
 }

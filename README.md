@@ -2,7 +2,7 @@
 
 Site da marca AXON com loja de demonstração, contas de cliente e painel de gestão:
 
-- **Loja (`/`):** apresentação com a fotografia da coleção, coleção com filtros, um slide por produto com 6 fotografias, fichas de produto, carrinho de demonstração, A Marca, newsletter, perguntas frequentes, contactos e rodapé legal.
+- **Loja (`/`):** página pensada para despertar o desejo de compra — área principal escura com a fotografia da coleção (brilho dourado e partículas animadas), faixa dourada em movimento, «Ao pormenor» (a fotografia muda ao percorrer a página), coleção com filtros e botão de adicionar ao carrinho em cada cartão, um slide por produto com 6 fotografias, «Ingredientes com história» (Própolis e Cravinho), A Marca, newsletter, perguntas frequentes, convite final, contactos e rodapé legal. No telemóvel, um atalho fixo leva à coleção. As animações respeitam a opção «reduzir movimento» do sistema.
 - **Contas:** criar conta (`/criar-conta`), entrar (`/entrar`) e «A minha conta» (`/conta`), onde o cliente altera o nome e a palavra-passe ou elimina a conta.
 - **Compra (`/checkout`):** dados do cliente, morada em Portugal, NIF opcional e pagamento por **MB WAY**, **Multibanco (entidade e referência)** ou **cartão**. Página da encomenda (`/encomenda/<número>`) com as instruções de pagamento, atualizada sozinha quando o pagamento entra.
 - **Painel (`/painel`, só administradores):** visão geral (faturação, encomendas, clientes, gráfico de novos clientes), encomendas (estado, envio com nota, cancelamento, confirmação manual), produtos (preço, stock, estado e textos), clientes, lista de lançamento e definições (loja online, contactos, empresa e páginas legais).
@@ -42,17 +42,21 @@ O checkout usa a **ifthenpay**, que junta os três métodos num só contrato. Os
 
 **Passar a pagamentos reais:**
 1. Contrate a ifthenpay e peça as chaves **MB WAY KEY**, **MB KEY** (referências dinâmicas) e **CCARD KEY**. Pode pedir primeiro chaves de teste.
-2. Escolha uma **chave anti-phishing** (texto longo e secreto) e peça à ifthenpay para ativar a notificação de pagamento («callback») para cada método com este endereço:
+2. Escolha uma **chave anti-phishing** (texto secreto, até 50 caracteres) e peça à ifthenpay para ativar a notificação de pagamento («callback») de cada método com o endereço respetivo (cada um até 300 caracteres):
    ```
-   https://O-SEU-DOMINIO/api/pagamentos/ifthenpay?key=[ANTI_PHISHING_KEY]&orderId=[ORDER_ID]&amount=[AMOUNT]&requestId=[REQUEST_ID]&method=[PAYMENT_METHOD]
+   MB WAY:     https://O-SEU-DOMINIO/api/pagamentos/ifthenpay?key=[ANTI_PHISHING_KEY]&orderId=[ORDER_ID]&amount=[AMOUNT]&requestId=[REQUEST_ID]&method=mbway
+   Multibanco: https://O-SEU-DOMINIO/api/pagamentos/ifthenpay?key=[ANTI_PHISHING_KEY]&orderId=[ORDER_ID]&amount=[AMOUNT]&requestId=[REQUEST_ID]&entity=[ENTITY]&reference=[REFERENCE]&method=multibanco
+   Cartão:     https://O-SEU-DOMINIO/api/pagamentos/ifthenpay?key=[ANTI_PHISHING_KEY]&orderId=[ORDER_ID]&amount=[AMOUNT]&requestId=[REQUEST_ID]&method=cartao
    ```
 3. No servidor, defina `PAYMENTS_PROVIDER=ifthenpay`, `IFTHENPAY_MBWAY_KEY`, `IFTHENPAY_MB_KEY`, `IFTHENPAY_CCARD_KEY`, `IFTHENPAY_ANTI_PHISHING_KEY` e `SITE_URL` (o seu domínio, com https). As chaves nunca vão para o navegador.
-4. Teste com o Webhook Tester da ifthenpay e confirme os nomes dos campos com a documentação atual (<https://ifthenpay.com/docs/>) — a integração está em `lib/server/payments/ifthenpay.ts`.
+4. **Teste primeiro na sandbox** com `IFTHENPAY_SANDBOX=1` (a ifthenpay pede que os testes não sejam feitos em produção). O Multibanco e o cartão passam a usar a sandbox; o cartão de teste aprovado é `4012 0010 3714 1112` (CVC 212, validade 12/27) e o recusado `4761 7390 0101 0135` (CVC 608, validade 12/29). O MB WAY não tem sandbox e fica desligado nesse modo: teste-o já em produção com um valor baixo e reembolse no backoffice. As notificações testam-se com o [Webhook Tester](https://ifthenpay.com/docs/tools/webhook-tester/) (o site tem de estar num endereço público). Retire `IFTHENPAY_SANDBOX` para abrir ao público.
+5. A integração está em `lib/server/payments/ifthenpay.ts`, conforme a documentação da ifthenpay de maio de 2026 (<https://ifthenpay.com/docs/en/>).
 
 **Como cada método funciona:**
-- **Multibanco:** é gerada uma referência dinâmica com a validade definida no painel (3 dias por omissão). A encomenda fica paga quando chega a notificação da ifthenpay.
-- **MB WAY:** o cliente recebe o pedido na app e tem 5 minutos para aprovar. A página consulta o estado e, se o pedido expirar ou for recusado, oferece uma nova tentativa ou outro método.
-- **Cartão:** o cliente é encaminhado para a página segura da ifthenpay (3-D Secure). No regresso, a assinatura `sk` é verificada; a notificação confirma também o pagamento.
+- **Multibanco:** é gerada uma referência dinâmica (entidade e referência) com a validade definida no painel (3 dias por omissão). A encomenda fica paga quando chega a notificação da ifthenpay. Depois da validade, a encomenda passa a «Pagamento não concluído» e o cliente pode gerar outra referência ou mudar de método.
+- **MB WAY:** o pedido é enviado para o telemóvel indicado (`351#número`) e o cliente tem 4 minutos para aprovar na app. A página consulta o estado e, se o pedido expirar ou for recusado, oferece uma nova tentativa ou outro método.
+- **Cartão:** o cliente é encaminhado para a página segura da ifthenpay (3-D Secure). No regresso, a assinatura `sk` é verificada; a notificação confirma também o pagamento. Se o cliente sair da página do cartão a meio, pode tentar de novo na página da encomenda.
+- Um pagamento que chegue para uma encomenda cancelada, ou um segundo pagamento da mesma encomenda, fica no histórico da encomenda como «pagamento-a-verificar», para reembolsar.
 - No painel, «Confirmar pagamento manualmente» serve para quando um pagamento aparece no backoffice da ifthenpay mas a notificação não chegou. Reembolsos fazem-se no backoffice da ifthenpay.
 
 **Ainda não incluído** (necessário antes de vender ao público): faturação com programa certificado pela AT (cada venda tem de ter fatura), e-mails de confirmação de encomenda (precisa de um serviço de e-mail) e escolha da transportadora.
@@ -75,6 +79,8 @@ O checkout usa a **ifthenpay**, que junta os três métodos num só contrato. Os
 | Contactos, identificação da empresa e páginas legais | Painel › Definições |
 | Tarefas antes do lançamento | Painel › Lançamento (lista em [lib/launch-checklist.ts](lib/launch-checklist.ts)) |
 | Nome, formato, embalagem e avisos regulamentares dos produtos | [lib/collection.ts](lib/collection.ts) |
+| Textos de «Ao pormenor», «Ingredientes com história» e do convite final | [components/Ritual.tsx](components/Ritual.tsx), [components/Origins.tsx](components/Origins.tsx), [components/Invitation.tsx](components/Invitation.tsx) |
+| Palavras da faixa dourada | [components/Marquee.tsx](components/Marquee.tsx) |
 | Fotografias (6 por produto) | `public/produtos/<produto>/1.webp` … `6.webp` |
 | Fotografia da coleção na área principal | `public/marca/colecao-axon.webp` |
 | Logótipo (emblema) | [components/BrandEmblem.tsx](components/BrandEmblem.tsx) e [components/brand-paths.ts](components/brand-paths.ts); opções em `brandConfig` ([lib/site-config.ts](lib/site-config.ts)) |

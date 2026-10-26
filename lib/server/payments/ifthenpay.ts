@@ -6,19 +6,24 @@ import { PaymentError, toAmount, type PaymentProvider, type ProviderPaymentStatu
 
 // Integração com a ifthenpay (MB WAY, Multibanco com referências dinâmicas e cartão).
 // As chaves são atribuídas pela ifthenpay ao contratar o serviço (há chaves de teste a pedido) e ficam
-// só no servidor, em variáveis de ambiente. Ao ativar, confirme os campos com a documentação atual
-// (https://ifthenpay.com/docs/) e teste com o Webhook Tester da ifthenpay.
+// só no servidor, em variáveis de ambiente. Campos conforme a documentação de maio de 2026
+// (https://ifthenpay.com/docs/en/); teste as notificações com o Webhook Tester da ifthenpay.
+//
+// Com IFTHENPAY_SANDBOX=1, o Multibanco e o cartão usam a sandbox da ifthenpay (sem dinheiro real).
+// O MB WAY não tem sandbox, por isso fica desligado nesse modo.
 
-const MBWAY_URL = "https://api.ifthenpay.com/spg/payment/mbway";
-const MBWAY_STATUS_URL = "https://api.ifthenpay.com/spg/payment/mbway/status";
-const MULTIBANCO_URL = "https://api.ifthenpay.com/multibanco/reference/init";
-const CARD_URL = "https://ifthenpay.com/api/creditcard/init/";
+const API = "https://api.ifthenpay.com";
+const MBWAY_URL = `${API}/spg/payment/mbway`;
+const MBWAY_STATUS_URL = `${API}/spg/payment/mbway/status`;
+const multibancoUrl = (sandbox: boolean) => `${API}/multibanco/reference/${sandbox ? "sandbox" : "init"}`;
+const cardUrl = (sandbox: boolean, key: string) => `${API}/creditcard/${sandbox ? "sandbox/init" : "init"}/${encodeURIComponent(key)}`;
 
 const keys = () => ({
   mbway: process.env.IFTHENPAY_MBWAY_KEY?.trim() || null,
   multibanco: process.env.IFTHENPAY_MB_KEY?.trim() || null,
   card: process.env.IFTHENPAY_CCARD_KEY?.trim() || null,
   antiPhishing: process.env.IFTHENPAY_ANTI_PHISHING_KEY?.trim() || null,
+  sandbox: ["1", "true", "sim"].includes(process.env.IFTHENPAY_SANDBOX?.trim().toLowerCase() ?? ""),
 });
 
 export const ifthenpayConfigured = () => {
@@ -57,28 +62,35 @@ function required(key: string | null, method: string): string {
 export function createIfthenpayProvider(): PaymentProvider {
   const k = keys();
   const methods: PaymentMethod[] = [];
-  if (k.mbway) methods.push("mbway");
+  if (k.mbway && !k.sandbox) methods.push("mbway");
   if (k.multibanco) methods.push("multibanco");
   if (k.card) methods.push("cartao");
 
   return {
     id: "ifthenpay",
-    label: "ifthenpay",
-    live: true,
+    label: k.sandbox ? "ifthenpay (sandbox)" : "ifthenpay",
+    live: !k.sandbox,
     methods,
 
     async startMbway({ orderNumber, amountCents, phone, email }) {
+      if (k.sandbox) throw new PaymentError("O MB WAY não está disponível no modo sandbox.");
       const result = await postJson(MBWAY_URL, {
         mbWayKey: required(k.mbway, "O MB WAY"),
         orderId: orderNumber,
         amount: toAmount(amountCents),
-        mobileNumber: phone,
-        email,
+        // Indicativo e número separados por «#».
+        mobileNumber: `351#${phone}`,
+        email: email.slice(0, 100),
         description: `Encomenda AXON ${orderNumber}`,
       });
-      // "000": pedido enviado para a app MB WAY do cliente.
-      if (text(result.Status) !== "000" || !text(result.RequestId)) {
-        throw new PaymentError(text(result.Message) || "Não foi possível enviar o pedido MB WAY.");
+      // "000": pedido enviado para a app MB WAY do cliente. 100 e 999: falha temporária. 122: recusado.
+      const status = text(result.Status);
+      if (status !== "000" || !text(result.RequestId)) {
+        throw new PaymentError(
+          status === "122"
+            ? "O pedido MB WAY foi recusado. Confirme se o número tem MB WAY ativo ou escolha outro método."
+            : `Não foi possível enviar o pedido MB WAY${status ? ` (código ${status})` : ""}. Tente novamente.`,
+        );
       }
       return { kind: "mbway", requestId: text(result.RequestId) };
     },
@@ -94,19 +106,21 @@ export function createIfthenpayProvider(): PaymentProvider {
     },
 
     async createMultibanco({ orderNumber, amountCents, expiryDays, email, name }) {
-      const result = await postJson(MULTIBANCO_URL, {
+      const result = await postJson(multibancoUrl(k.sandbox), {
         mbKey: required(k.multibanco, "O Multibanco"),
         orderId: orderNumber,
         amount: toAmount(amountCents),
         description: `Encomenda AXON ${orderNumber}`,
-        clientName: name,
-        clientEmail: email,
+        clientName: name.slice(0, 200),
+        clientEmail: email.slice(0, 200),
         expiryDays: String(expiryDays),
       });
+      // "0": referência criada.
+      const status = text(result.Status);
       const entity = text(result.Entity);
       const reference = text(result.Reference);
-      if (!entity || !reference) {
-        throw new PaymentError(text(result.Message) || "Não foi possível gerar a referência Multibanco.");
+      if (status !== "0" || !entity || !reference) {
+        throw new PaymentError(`Não foi possível gerar a referência Multibanco${status ? ` (código ${status})` : ""}. Tente outro método.`);
       }
       return {
         kind: "multibanco",
@@ -118,7 +132,7 @@ export function createIfthenpayProvider(): PaymentProvider {
     },
 
     async startCard({ orderNumber, amountCents, successUrl, errorUrl, cancelUrl }) {
-      const result = await postJson(CARD_URL + encodeURIComponent(required(k.card, "O pagamento com cartão")), {
+      const result = await postJson(cardUrl(k.sandbox, required(k.card, "O pagamento com cartão")), {
         orderId: orderNumber,
         amount: toAmount(amountCents),
         successUrl,
@@ -126,9 +140,11 @@ export function createIfthenpayProvider(): PaymentProvider {
         cancelUrl,
         language: "pt",
       });
+      // "0": página de pagamento criada; o cliente é encaminhado para PaymentUrl (sempre por GET).
+      const status = text(result.Status);
       const url = text(result.PaymentUrl);
-      if (!url.startsWith("https://")) {
-        throw new PaymentError(text(result.Message) || "Não foi possível abrir o pagamento com cartão.");
+      if (status !== "0" || !url.startsWith("https://")) {
+        throw new PaymentError(`Não foi possível abrir o pagamento com cartão${status ? ` (código ${status})` : ""}. Tente outro método.`);
       }
       return { kind: "redirect", requestId: text(result.RequestId) || null, url };
     },

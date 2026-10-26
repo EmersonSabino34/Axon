@@ -1,12 +1,11 @@
 /* ==========================================================================
    AXON — Uma Vida Extraordinária
-   1. Tokens          7. Valores           13. Carrinho
-   2. Base            8. Coleção           14. A Marca
-   3. Utilitários     9. Galeria           15. Newsletter
-   4. Componentes    10. Slides            16. Perguntas frequentes
-   5. Cabeçalho      11. Ornamentos        17. Contactos
+   1. Tokens          7. Faixa dourada     13. Carrinho              19. Ao pormenor
+   2. Base            8. Coleção           14. A Marca               20. Ingredientes com história
+   3. Utilitários     9. Galeria           15. Newsletter            21. Convite
+   4. Componentes    10. Slides            16. Perguntas frequentes  22. Atalho fixo (telemóvel)
+   5. Cabeçalho      11. Ornamentos        17. Contactos             23. Animações
    6. Hero           12. Janelas           18. Rodapé
-                                           19. Animações
    ========================================================================== */
 
 /* 1. Tokens ---------------------------------------------------------------- */
@@ -307,6 +306,26 @@ p {
 
 .button--gold:hover {
   background: var(--gold-soft);
+}
+
+/* Botão principal com halo dourado a pulsar devagar. */
+.button--glow {
+  box-shadow: 0 0 0 0 rgba(214, 174, 101, 0.55);
+  animation: glow 2.8s var(--ease) 1.5s infinite;
+}
+
+.button--glow:hover {
+  animation: none;
+  box-shadow: 0 14px 34px -12px rgba(214, 174, 101, 0.75);
+  transform: translateY(-2px);
+}
+
+.button--glow svg {
+  transition: transform 0.25s var(--ease);
+}
+
+.button--glow:hover svg {
+  transform: translateX(4px);
 }
 
 .button--block {
@@ -934,6 +953,34 @@ textarea.field__input {
   color: var(--gold);
 }
 
+.top-bar__link {
+  border-bottom: 1px solid rgba(214, 174, 101, 0.6);
+  color: var(--gold-soft);
+  transition: color 0.2s var(--ease);
+}
+
+.top-bar__link:hover {
+  color: var(--cream);
+}
+
+.top-bar :focus-visible {
+  outline-color: var(--gold);
+}
+
+@media (max-width: 539px) {
+  .top-bar__text {
+    flex-wrap: wrap;
+    gap: 0 0.6em;
+    padding-block: 6px;
+    letter-spacing: 0.16em;
+    text-align: center;
+  }
+
+  .top-bar__text span {
+    display: none;
+  }
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -947,6 +994,19 @@ textarea.field__input {
 
 .site-header.is-compact {
   box-shadow: 0 12px 30px -22px rgba(16, 41, 31, 0.45);
+}
+
+/* Barra dourada que enche à medida que se percorre a página (só onde há animações ligadas ao scroll). */
+.site-header__progress {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold-text), var(--gold), var(--gold-soft));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
 }
 
 .site-header__inner {
@@ -1177,24 +1237,46 @@ textarea.field__input {
 .hero {
   position: relative;
   overflow: hidden;
+  isolation: isolate;
   background:
-    radial-gradient(1100px 620px at 88% 18%, rgba(214, 174, 101, 0.17), transparent 62%),
-    linear-gradient(180deg, var(--cream), var(--white-warm));
+    radial-gradient(900px 520px at 50% -8%, rgba(214, 174, 101, 0.26), transparent 65%),
+    radial-gradient(700px 480px at 50% 92%, rgba(214, 174, 101, 0.12), transparent 70%),
+    var(--forest);
+  color: var(--cream);
+}
+
+.hero :focus-visible {
+  outline-color: var(--gold);
 }
 
 .hero__inner {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  justify-items: center;
+  padding-block: clamp(40px, 5.5vw, 80px) clamp(48px, 6vw, 80px);
+  text-align: center;
+}
+
+.hero__intro {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 24px clamp(32px, 6vw, 96px);
-  padding-block: clamp(40px, 6vw, 80px) clamp(56px, 7vw, 96px);
+  max-width: 880px;
+}
+
+.hero__eyebrow::after {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
 }
 
 .hero__title {
-  margin-top: 20px;
-  font-size: clamp(2.4rem, 1.3rem + 3vw, 3.9rem);
-  line-height: 1.05;
-  letter-spacing: -0.015em;
+  margin-top: 22px;
+  font-size: clamp(2.5rem, 1.1rem + 4.2vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--cream);
 }
 
 .hero__title span,
@@ -1202,48 +1284,60 @@ textarea.field__input {
   display: block;
 }
 
+/* Dourado com reflexo que passa devagar, como a luz numa tampa. */
 .hero__title em {
+  padding-bottom: 0.08em;
+  background: linear-gradient(100deg, #b98d44 0%, #f3dfae 30%, #d6ae65 50%, #b98d44 70%, #f3dfae 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   font-style: italic;
-  color: var(--gold-text);
-}
-
-.hero__aside {
-  padding-bottom: 4px;
+  animation: shimmer 8s linear infinite;
 }
 
 .hero__text {
-  max-width: 34rem;
-  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.12rem);
-  color: var(--muted);
+  max-width: 38rem;
+  margin-top: 22px;
+  font-size: clamp(1rem, 0.94rem + 0.35vw, 1.18rem);
+  color: rgba(247, 243, 233, 0.8);
 }
 
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 14px;
-  margin-top: 28px;
+  margin-top: 32px;
 }
 
-.hero__notice {
+.hero__facts {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  max-width: 34rem;
-  margin-top: 28px;
-  padding-top: 18px;
-  border-top: 1px solid var(--line-gold);
-  font-size: 0.8rem;
-  color: var(--muted);
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 0;
+  margin-top: 30px;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: rgba(247, 243, 233, 0.72);
 }
 
-.hero__notice svg {
-  flex: none;
-  color: var(--gold-text);
+.hero__facts li {
+  padding-inline: 18px;
+}
+
+.hero__facts li + li {
+  border-left: 1px solid rgba(214, 174, 101, 0.35);
+}
+
+.hero__facts strong {
+  font-weight: 600;
+  color: var(--gold-soft);
 }
 
 .hero-photo {
-  grid-column: 1 / -1;
-  margin-top: clamp(16px, 3vw, 32px);
+  width: 100%;
+  margin-top: clamp(40px, 6vw, 64px);
 }
 
 .hero-photo__frame {
@@ -1251,14 +1345,18 @@ textarea.field__input {
   aspect-ratio: 1380 / 906;
   overflow: hidden;
   border-radius: var(--radius-lg);
-  background: var(--forest);
-  box-shadow: var(--shadow-lift);
+  background: var(--forest-2);
+  box-shadow:
+    0 0 0 1px rgba(214, 174, 101, 0.28),
+    0 40px 120px -50px rgba(214, 174, 101, 0.45),
+    0 30px 60px -30px rgba(0, 0, 0, 0.6);
 }
 
 .hero-photo__frame::after {
   content: "";
   position: absolute;
   inset: 12px;
+  z-index: 3;
   border: 1px solid rgba(214, 174, 101, 0.5);
   border-radius: 16px;
   pointer-events: none;
@@ -1266,14 +1364,49 @@ textarea.field__input {
 
 .hero-photo__image {
   object-fit: cover;
-  animation: photo-in 1.6s var(--ease) both;
+  animation:
+    photo-in 1.6s var(--ease) both,
+    drift 26s ease-in-out 1.6s infinite alternate;
+}
+
+/* Faixa de luz que atravessa os frascos de vez em quando. */
+.hero-photo__sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 238, 196, 0.22) 50%, transparent 62%);
+  background-size: 300% 100%;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: sheen 9s var(--ease) 2s infinite;
+}
+
+.hero-photo__sparks {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-photo__sparks span {
+  position: absolute;
+  bottom: -10px;
+  left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: #f3dfae;
+  box-shadow: 0 0 10px 2px rgba(214, 174, 101, 0.7);
+  opacity: 0;
+  animation: spark-rise var(--duration) linear var(--delay) infinite;
 }
 
 .hero-photo__logo {
   position: absolute;
   top: 5%;
   left: 50%;
-  z-index: 1;
+  z-index: 2;
   translate: -50% 0;
   animation: fade-up 1s var(--ease) 0.35s both;
 }
@@ -1288,26 +1421,35 @@ textarea.field__input {
   position: absolute;
   top: 26px;
   left: 26px;
-  z-index: 2;
+  z-index: 4;
 }
 
 .hero-photo__caption {
   margin-top: 14px;
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   text-align: center;
-  color: var(--muted);
-}
-
-@media (max-width: 899px) {
-  .hero__inner {
-    grid-template-columns: 1fr;
-    align-items: start;
-  }
+  color: rgba(247, 243, 233, 0.6);
 }
 
 @media (max-width: 539px) {
+  .hero__actions {
+    width: 100%;
+  }
+
   .hero__actions .button {
     flex: 1 1 100%;
+  }
+
+  .hero__facts {
+    gap: 6px 18px;
+  }
+
+  .hero__facts li {
+    padding-inline: 0;
+  }
+
+  .hero__facts li + li {
+    border-left: 0;
   }
 
   .hero-photo__frame {
@@ -1325,64 +1467,48 @@ textarea.field__input {
   }
 }
 
-/* 7. Valores --------------------------------------------------------------- */
+/* 7. Faixa dourada --------------------------------------------------------- */
 
-.values-band {
-  background: var(--forest);
-  color: var(--cream);
+.marquee {
+  overflow: hidden;
+  border-block: 1px solid rgba(16, 41, 31, 0.18);
+  background: linear-gradient(90deg, #c99f55, var(--gold) 30%, #e2c17f 50%, var(--gold) 70%, #c99f55);
+  color: var(--forest);
 }
 
-.values-band__list {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.values-band__item {
+.marquee__track {
   display: flex;
-  gap: 18px;
-  padding: 44px clamp(16px, 3vw, 40px);
+  width: max-content;
+  animation: marquee 48s linear infinite;
 }
 
-.values-band__item + .values-band__item {
-  border-left: 1px solid rgba(214, 174, 101, 0.25);
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
 }
 
-.values-band__icon {
+.marquee__group {
+  display: flex;
   flex: none;
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border: 1px solid rgba(214, 174, 101, 0.5);
-  border-radius: 50%;
-  color: var(--gold);
 }
 
-.values-band__title {
-  font-size: 1.2rem;
-  color: var(--cream);
+.marquee__item {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding-right: 28px;
+  padding-block: 16px;
+  font-family: var(--font-serif);
+  font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem);
+  font-style: italic;
+  white-space: nowrap;
 }
 
-.values-band__text {
-  margin-top: 6px;
-  font-size: 0.86rem;
-  color: rgba(247, 243, 233, 0.74);
-}
-
-@media (max-width: 899px) {
-  .values-band__list {
-    grid-template-columns: 1fr;
-  }
-
-  .values-band__item {
-    padding-inline: 0;
-    padding-block: 28px;
-  }
-
-  .values-band__item + .values-band__item {
-    border-top: 1px solid rgba(214, 174, 101, 0.25);
-    border-left: 0;
-  }
+.marquee__item::after {
+  content: "\2726";
+  font-family: var(--font-sans);
+  font-size: 0.7em;
+  font-style: normal;
+  opacity: 0.7;
 }
 
 /* 8. Coleção --------------------------------------------------------------- */
@@ -1507,13 +1633,38 @@ textarea.field__input {
   pointer-events: none;
 }
 
+.product-card__open {
+  position: absolute;
+  inset: 0;
+  cursor: zoom-in;
+}
+
 .product-card__image {
   object-fit: cover;
-  transition: transform 0.6s var(--ease);
+  transition: transform 0.8s var(--ease);
 }
 
 .product-card:hover .product-card__image {
-  transform: scale(1.04);
+  transform: scale(1.07);
+}
+
+/* Reflexo dourado que atravessa a fotografia ao passar o rato. */
+.product-card__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 238, 196, 0.32) 50%, transparent 65%);
+  background-position: 120% 0;
+  background-size: 250% 100%;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transition: background-position 0s;
+}
+
+.product-card:hover .product-card__media::after {
+  background-position: -120% 0;
+  transition: background-position 1.1s var(--ease);
 }
 
 .product-card__tag {
@@ -1550,12 +1701,15 @@ textarea.field__input {
   color: var(--muted);
 }
 
+/* Preço e «Saber mais» à esquerda, botão do carrinho à direita. */
 .product-card__footer {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-areas:
+    "price add"
+    "more add";
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 2px 12px;
   width: 100%;
   margin-top: auto;
   padding-top: 14px;
@@ -1563,6 +1717,7 @@ textarea.field__input {
 }
 
 .product-card__price {
+  grid-area: price;
   white-space: nowrap;
   font-size: 1rem;
   font-weight: 600;
@@ -1573,6 +1728,48 @@ textarea.field__input {
   font-size: 0.76rem;
   font-weight: 400;
   color: var(--muted);
+}
+
+.product-card__actions {
+  display: contents;
+}
+
+.product-card__actions .text-button {
+  grid-area: more;
+  justify-self: start;
+}
+
+.product-card__add {
+  display: grid;
+  place-items: center;
+  grid-area: add;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--forest);
+  color: var(--gold-soft);
+  transition:
+    background-color 0.25s var(--ease),
+    color 0.25s var(--ease),
+    transform 0.25s var(--ease);
+}
+
+.product-card__add:hover {
+  background: var(--gold);
+  color: var(--forest);
+  transform: scale(1.06);
+}
+
+.product-card__add.is-added {
+  background: var(--gold);
+  color: var(--forest);
+  animation: badge-pop 0.45s var(--ease);
+}
+
+.product-card__add:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+  transform: none;
 }
 
 .catalog__note {
@@ -1835,14 +2032,14 @@ textarea.field__input {
   color: rgba(247, 243, 233, 0.75);
 }
 
+/* Os oito produtos ficam todos à vista, em várias linhas se for preciso, sem barra de deslocamento. */
 .showcase__tabs {
   display: flex;
-  justify-content: safe center;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 8px;
   margin-bottom: clamp(28px, 4vw, 44px);
-  padding: 4px 2px 10px;
-  overflow-x: auto;
-  scrollbar-width: thin;
+  padding-block: 4px;
 }
 
 .showcase__tab {
@@ -1991,6 +2188,17 @@ textarea.field__input {
   .gallery__arrow {
     width: 40px;
     height: 40px;
+  }
+
+  .showcase__tabs {
+    gap: 6px;
+  }
+
+  .showcase__tab {
+    min-height: 36px;
+    padding-inline: 12px;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
   }
 
   .showcase__actions,
@@ -3032,7 +3240,454 @@ textarea.field__input {
   }
 }
 
-/* 19. Animações ----------------------------------------------------------- */
+/* 19. Ao pormenor --------------------------------------------------------- */
+
+.ritual {
+  background: var(--cream);
+}
+
+.ritual__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(40px, 6vw, 96px);
+}
+
+.ritual__stage {
+  position: sticky;
+  top: calc(var(--header-h) + 32px);
+  align-self: start;
+}
+
+.ritual__frame {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--forest);
+  box-shadow: var(--shadow-lift);
+}
+
+.ritual__frame::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  z-index: 2;
+  border: 1px solid rgba(214, 174, 101, 0.5);
+  border-radius: 16px;
+  pointer-events: none;
+}
+
+.ritual__image {
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.06);
+  transition:
+    opacity 0.8s var(--ease),
+    transform 1.4s var(--ease);
+}
+
+.ritual__image.is-active {
+  opacity: 1;
+  transform: none;
+}
+
+.ritual__tag {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 3;
+}
+
+.ritual__dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.ritual__dots li {
+  width: 28px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(16, 41, 31, 0.15);
+  transition:
+    width 0.4s var(--ease),
+    background-color 0.4s var(--ease);
+}
+
+.ritual__dots li.is-active {
+  width: 56px;
+  background: var(--gold);
+}
+
+.ritual__steps {
+  display: grid;
+}
+
+.ritual__step {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 14px;
+  min-height: 78vh;
+  padding-block: 40px;
+  opacity: 0.32;
+  transition: opacity 0.5s var(--ease);
+}
+
+.ritual__step.is-active {
+  opacity: 1;
+}
+
+.ritual__step-media {
+  display: none;
+}
+
+.ritual__number {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 2rem + 3vw, 4.6rem);
+  font-style: italic;
+  line-height: 1;
+  color: var(--gold);
+}
+
+.ritual__kicker {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-text);
+}
+
+.ritual__title {
+  font-size: clamp(1.8rem, 1.3rem + 1.8vw, 2.6rem);
+}
+
+.ritual__text {
+  max-width: 30rem;
+  font-size: 1.02rem;
+  color: var(--muted);
+}
+
+@media (max-width: 899px) {
+  .ritual__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ritual__stage {
+    display: none;
+  }
+
+  .ritual__steps {
+    gap: 56px;
+  }
+
+  .ritual__step {
+    min-height: 0;
+    padding-block: 0;
+    opacity: 1;
+  }
+
+  .ritual__step-media {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    margin-bottom: 8px;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--forest);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .ritual__step-media img {
+    object-fit: cover;
+  }
+
+  .ritual__tag {
+    top: 18px;
+    left: 18px;
+  }
+}
+
+/* 20. Ingredientes com história ------------------------------------------- */
+
+.origins {
+  background: var(--white-warm);
+}
+
+.origins__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 36px);
+}
+
+.origin-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--forest);
+  color: var(--cream);
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow 0.4s var(--ease);
+}
+
+.origin-card:hover {
+  box-shadow: var(--shadow-lift);
+}
+
+.origin-card :focus-visible {
+  outline-color: var(--gold);
+}
+
+.origin-card__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+/* A fotografia funde-se com o verde do cartão. */
+.origin-card__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 55%, var(--forest));
+  pointer-events: none;
+}
+
+.origin-card__image {
+  object-fit: cover;
+  transition: transform 1.2s var(--ease);
+}
+
+.origin-card:hover .origin-card__image {
+  transform: scale(1.05);
+}
+
+.origin-card__tag {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1;
+}
+
+.origin-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: clamp(24px, 3vw, 36px);
+  padding-top: 8px;
+}
+
+.origin-card__kicker {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.origin-card__title {
+  font-size: clamp(1.8rem, 1.3rem + 1.6vw, 2.5rem);
+  font-style: italic;
+  color: var(--cream);
+}
+
+.origin-card__text {
+  color: rgba(247, 243, 233, 0.8);
+}
+
+.origin-card__button {
+  margin-top: auto;
+}
+
+@media (max-width: 899px) {
+  .origins__list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 539px) {
+  .origin-card__button {
+    width: 100%;
+  }
+}
+
+/* 21. Convite ------------------------------------------------------------- */
+
+.invitation {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding-block: clamp(88px, 12vw, 160px);
+  background: var(--forest);
+  color: var(--cream);
+  text-align: center;
+}
+
+.invitation :focus-visible {
+  outline-color: var(--gold);
+}
+
+.invitation__media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.invitation__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(720px 380px at 50% 45%, rgba(16, 41, 31, 0.72), transparent 80%),
+    linear-gradient(180deg, rgba(16, 41, 31, 0.92), rgba(16, 41, 31, 0.6) 50%, rgba(16, 41, 31, 0.94));
+}
+
+.invitation__image {
+  object-fit: cover;
+  object-position: center 75%;
+}
+
+.invitation__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.invitation__inner .eyebrow::after {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+.invitation__title {
+  max-width: 16em;
+  margin-top: 18px;
+  font-size: clamp(2.2rem, 1.3rem + 3.4vw, 4rem);
+  line-height: 1.08;
+  color: var(--cream);
+}
+
+.invitation__title em {
+  display: block;
+  color: var(--gold);
+}
+
+.invitation__text {
+  max-width: 34rem;
+  margin-top: 20px;
+  font-size: 1.05rem;
+  color: rgba(247, 243, 233, 0.82);
+}
+
+.invitation__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.invitation__trust {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 26px;
+  margin-top: 34px;
+  font-size: 0.8rem;
+  color: rgba(247, 243, 233, 0.78);
+}
+
+.invitation__trust li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.invitation__trust svg {
+  color: var(--gold);
+}
+
+@media (max-width: 539px) {
+  .invitation__actions,
+  .invitation__actions .button {
+    width: 100%;
+  }
+}
+
+/* 22. Atalho fixo (telemóvel) --------------------------------------------- */
+
+.sticky-cta {
+  display: none;
+}
+
+@media (max-width: 899px) {
+  .sticky-cta {
+    position: fixed;
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    left: 12px;
+    z-index: 35;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    max-width: 520px;
+    margin-inline: auto;
+    padding: 8px 8px 8px 20px;
+    border: 1px solid rgba(214, 174, 101, 0.45);
+    border-radius: 999px;
+    background: rgba(16, 41, 31, 0.94);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.55);
+    color: var(--cream);
+    opacity: 0;
+    transform: translateY(140%);
+    transition:
+      opacity 0.35s var(--ease),
+      transform 0.45s var(--ease);
+  }
+
+  .sticky-cta.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .sticky-cta :focus-visible {
+    outline-color: var(--gold);
+  }
+}
+
+.sticky-cta__text {
+  display: grid;
+  line-height: 1.25;
+}
+
+.sticky-cta__name {
+  font-family: var(--font-serif);
+  font-size: 1.02rem;
+}
+
+.sticky-cta__price {
+  font-size: 0.74rem;
+  color: var(--gold-soft);
+}
+
+.sticky-cta__button {
+  min-height: 44px;
+  padding-inline: 20px;
+  white-space: nowrap;
+}
+
+/* 23. Animações ----------------------------------------------------------- */
 
 @keyframes fade-up {
   from {
@@ -3079,21 +3734,92 @@ textarea.field__input {
   }
 }
 
-:is(.hero__intro, .hero__aside) > * {
-  animation: fade-up 0.8s var(--ease) both;
+.hero__intro > * {
+  animation: fade-up 0.9s var(--ease) both;
 }
 
-.hero__intro > :nth-child(2),
-.hero__aside > :nth-child(1) {
-  animation-delay: 0.1s;
+.hero__intro > :nth-child(2) {
+  animation-delay: 0.12s;
 }
 
-.hero__aside > :nth-child(2) {
-  animation-delay: 0.2s;
+.hero__intro > :nth-child(3) {
+  animation-delay: 0.24s;
 }
 
-.hero__aside > :nth-child(3) {
-  animation-delay: 0.3s;
+.hero__intro > :nth-child(4) {
+  animation-delay: 0.36s;
+}
+
+.hero__intro > :nth-child(5) {
+  animation-delay: 0.48s;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -250% 0;
+  }
+}
+
+@keyframes drift {
+  to {
+    transform: scale(1.07) translate(-1%, -1%);
+  }
+}
+
+@keyframes sheen {
+  0% {
+    background-position: 130% 0;
+  }
+  45%,
+  100% {
+    background-position: -130% 0;
+  }
+}
+
+@keyframes spark-rise {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  15% {
+    opacity: 0.9;
+  }
+  70% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(18px, -520px);
+  }
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(214, 174, 101, 0.55);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 16px rgba(214, 174, 101, 0);
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-25%);
+  }
+}
+
+@keyframes progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes recede {
+  to {
+    opacity: 0.6;
+    transform: scale(0.94);
+  }
 }
 
 @keyframes photo-in {
@@ -3129,7 +3855,9 @@ textarea.field__input {
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .section-header,
-    .values-band__item,
+    .ritual__number,
+    .origin-card,
+    .invitation__inner,
     .brand-plate,
     .brand-values__item,
     .accordion__item,
@@ -3138,6 +3866,18 @@ textarea.field__input {
       animation: fade-up linear both;
       animation-timeline: view();
       animation-range: entry 0% entry 45%;
+    }
+
+    /* A fotografia principal recua um pouco ao sair do ecrã. */
+    .hero-photo__frame {
+      animation: recede linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+
+    .site-header__progress {
+      animation: progress linear both;
+      animation-timeline: scroll(root);
     }
   }
 }

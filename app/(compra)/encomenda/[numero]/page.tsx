@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { OrderView } from "@/components/checkout/OrderView";
-import { canViewOrder, getOrderByNumber } from "@/lib/server/orders";
+import { canViewOrder, expireOverduePayment } from "@/lib/server/orders";
 import { getPaymentProvider } from "@/lib/server/payments";
 import { getCurrentUser } from "@/lib/server/session";
 
@@ -23,7 +24,9 @@ async function OrderContent({ params, searchParams }: PageProps<"/encomenda/[num
   const user = await getCurrentUser();
   if (!canViewOrder(numero, token || null, user)) notFound();
 
-  const order = getOrderByNumber(numero);
+  // Compara os prazos de pagamento com a hora atual: tem de ser calculado em cada pedido.
+  await connection();
+  const order = expireOverduePayment(numero);
   if (!order) notFound();
   const provider = getPaymentProvider();
 

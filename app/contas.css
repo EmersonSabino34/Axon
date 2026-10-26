@@ -14,43 +14,26 @@
 .access__visual {
   position: sticky;
   top: 0;
+  display: flex;
+  flex-direction: column;
   height: 100vh;
   overflow: hidden;
   background: var(--forest);
 }
 
-.access__image {
-  object-fit: cover;
-  object-position: center 70%;
-}
-
-.access__visual::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(8, 26, 18, 0.2), rgba(8, 26, 18, 0) 40%, rgba(8, 26, 18, 0.8));
-}
-
-.access__brand {
-  position: absolute;
-  top: 5%;
-  left: 50%;
-  z-index: 1;
-  translate: -50% 0;
-}
-
-.access__brand .emblem {
-  width: clamp(140px, 13vw, 180px);
-  height: auto;
-  filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.4));
+.access__wordmark {
+  padding: 40px 48px 0;
+  font-family: var(--font-serif);
+  font-size: 1.7rem;
+  line-height: 1;
+  letter-spacing: 0.24em;
+  color: var(--gold);
 }
 
 .access__quote {
-  position: absolute;
-  right: 48px;
-  bottom: 48px;
-  left: 48px;
+  position: relative;
   z-index: 1;
+  margin: auto 48px clamp(-120px, -9vh, -48px);
   font-family: var(--font-serif);
   font-size: clamp(1.6rem, 1rem + 1.6vw, 2.4rem);
   line-height: 1.15;
@@ -61,6 +44,20 @@
   display: block;
   font-style: italic;
   color: var(--gold);
+}
+
+/* A parte de cima da fotografia é fundo verde vazio: some-se no painel e deixa a frase por cima. */
+.access__photo {
+  position: relative;
+  flex: none;
+  aspect-ratio: 1380 / 906;
+  max-height: 68%;
+  mask-image: linear-gradient(180deg, transparent 18%, #000 40%);
+}
+
+.access__image {
+  object-fit: cover;
+  object-position: center bottom;
 }
 
 .access__main {
@@ -94,11 +91,13 @@
 
 .access__logo {
   display: none;
-}
-
-.access__logo .emblem {
-  width: 52px;
-  height: 52px;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  line-height: 1;
+  letter-spacing: 0.24em;
+  /* Compensa o espaço que o letter-spacing deixa depois do «N». */
+  margin-right: -0.24em;
+  color: var(--forest);
 }
 
 .access__content {

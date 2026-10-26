@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { MBWAY_TIMEOUT_MINUTES, orderStatusLabels } from "@/lib/commerce";
-import { canViewOrder, getOrderByNumber, markOrderFailed, markOrderPaid } from "@/lib/server/orders";
+import { orderStatusLabels } from "@/lib/commerce";
+import { canViewOrder, expireOverduePayment, getOrderByNumber, markOrderFailed, markOrderPaid } from "@/lib/server/orders";
 import { getPaymentProvider } from "@/lib/server/payments";
 import { getCurrentUser } from "@/lib/server/session";
 
@@ -12,26 +12,21 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const user = await getCurrentUser();
   if (!canViewOrder(numero, token, user)) return NextResponse.json({ error: "Não encontrada" }, { status: 404 });
 
-  let order = getOrderByNumber(numero);
-  if (order?.status === "pendente" && order.paymentMethod === "mbway" && order.paymentRequestId) {
+  const current = getOrderByNumber(numero);
+  if (current?.status === "pendente" && current.paymentMethod === "mbway" && current.paymentRequestId) {
     const provider = getPaymentProvider();
-    if (provider?.id === order.provider && provider.live) {
+    if (provider?.id === current.provider && provider.live) {
       try {
-        const status = await provider.mbwayStatus(order.paymentRequestId);
-        if (status === "pago") markOrderPaid(numero, "MB WAY (consulta de estado)");
+        const status = await provider.mbwayStatus(current.paymentRequestId);
+        if (status === "pago") markOrderPaid(numero, `MB WAY (consulta de estado) ${current.paymentRequestId}`);
         if (status === "falhado") markOrderFailed(numero, "O pedido MB WAY foi recusado ou expirou.");
       } catch {
         // Sem resposta do prestador: mantém-se pendente e volta a perguntar na próxima consulta.
       }
     }
-    order = getOrderByNumber(numero);
-    const ageMinutes = order ? (Date.now() - new Date(order.updatedAt).getTime()) / 60_000 : 0;
-    if (order?.status === "pendente" && ageMinutes > MBWAY_TIMEOUT_MINUTES + 1) {
-      markOrderFailed(numero, "O pedido MB WAY expirou sem ser aprovado.");
-      order = getOrderByNumber(numero);
-    }
   }
 
+  const order = expireOverduePayment(numero);
   if (!order) return NextResponse.json({ error: "Não encontrada" }, { status: 404 });
   return NextResponse.json(
     { status: order.status, label: orderStatusLabels[order.status], paymentError: order.paymentError },

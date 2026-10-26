@@ -36,8 +36,8 @@ export const defaultCommerceSettings: CommerceSettings = {
   multibancoExpiryDays: 3,
 };
 
-/** Tempo que o cliente tem para aprovar o pedido na app MB WAY. */
-export const MBWAY_TIMEOUT_MINUTES = 5;
+/** Tempo que o cliente tem para aprovar o pedido na app MB WAY (definido pela ifthenpay). */
+export const MBWAY_TIMEOUT_MINUTES = 4;
 
 export function shippingFor(subtotalCents: number, settings: CommerceSettings): number | null {
   if (settings.shippingCents === null) return null;

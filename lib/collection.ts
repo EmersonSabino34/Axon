@@ -263,3 +263,9 @@ export function getPhotos(product: Product): ProductPhoto[] {
 export function matchesFilter(product: Product, filter: FilterKey): boolean {
   return filter === "todos" || product.format === filter;
 }
+
+/** Preço mais baixo da coleção, em cêntimos («desde …»), ou `null` se nenhum produto tiver preço. */
+export function lowestPriceCents(products: Product[]): number | null {
+  const prices = products.flatMap((product) => (product.priceCents === null ? [] : [product.priceCents]));
+  return prices.length > 0 ? Math.min(...prices) : null;
+}

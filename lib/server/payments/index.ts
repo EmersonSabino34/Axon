@@ -5,7 +5,8 @@ import { createTestProvider } from "./test";
 import type { PaymentProvider } from "./types";
 
 // Escolha do prestador de pagamentos:
-// - PAYMENTS_PROVIDER=ifthenpay → pagamentos reais (precisa das chaves IFTHENPAY_*).
+// - PAYMENTS_PROVIDER=ifthenpay → pagamentos reais (precisa das chaves IFTHENPAY_*);
+//   com IFTHENPAY_SANDBOX=1, Multibanco e cartão na sandbox da ifthenpay (sem dinheiro real).
 // - PAYMENTS_PROVIDER=teste     → simulação, sem dinheiro real.
 // - Sem valor: modo de teste em desenvolvimento; em produção, ifthenpay se estiver configurada,
 //   caso contrário nenhum (as encomendas ficam fechadas).
