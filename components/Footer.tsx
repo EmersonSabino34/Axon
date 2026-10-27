@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { Logo } from "./Logo";
