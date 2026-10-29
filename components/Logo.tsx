@@ -12,7 +12,6 @@ export function Logo({ size = 56, full = false, tone = "dark", className }: { si
       <circle cx="60" cy="60" r="52" fill="none" stroke="#D6AE65" strokeOpacity=".7" strokeWidth=".6" />
       <g transform={`translate(${full ? 51 : 49} ${full ? 18 : 17}) scale(${full ? 0.4 : 0.46})`} color="#B8913F">
         <SproutPaths />
-
       </g>
       <text x="60" y={full ? 68 : 74} textAnchor="middle" style={{ fontFamily: "var(--font-serif), Georgia, serif" }} fontSize={full ? 25 : 29} letterSpacing="1.5" fill={word}>AXON</text>
       {full && (
