@@ -5,7 +5,6 @@ import { useState } from "react";
 import { formatGroups, type Format, type Product } from "@/lib/products";
 import { ProductCard } from "./ProductCard";
 
-
 export function ProductGrid({ products, showFilters = true }: { products: Product[]; showFilters?: boolean }) {
   const [filter, setFilter] = useState<Format | "todos">("todos");
   const list = filter === "todos" ? products : products.filter((p) => p.format === filter);
