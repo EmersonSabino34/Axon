@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useState } from "react";
 
 import { formatGroups, type Format, type Product } from "@/lib/products";
