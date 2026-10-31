@@ -2,6 +2,7 @@
 
 
 import { useState } from "react";
+
 import { formatGroups, type Format, type Product } from "@/lib/products";
 import { ProductCard } from "./ProductCard";
 
