@@ -29,7 +29,6 @@ export function SignInForm() {
   );
 }
 
-
 export function SignUpForm() {
   const [state, action, pending] = useActionState<AccountState, FormData>(signUp, {});
   return (
