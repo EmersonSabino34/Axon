@@ -3,7 +3,6 @@
 import { useActionState } from "react";
 import { changePassword, resetPassword, saveAccount, signIn, signUp, type AccountState } from "@/app/(site)/conta/actions";
 
-
 function Submit({ pending, label, pendingLabel, state }: { pending: boolean; label: string; pendingLabel: string; state: AccountState }) {
   return (
     <div className="full form-actions">
