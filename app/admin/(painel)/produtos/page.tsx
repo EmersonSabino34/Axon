@@ -7,7 +7,6 @@ import { brl } from "@/lib/format";
 
 export const metadata = { title: "Produtos" };
 
-
 export default async function ProdutosAdmin({ searchParams }: { searchParams: Promise<{ salvo?: string }> }) {
   const { salvo } = await searchParams;
   const since = new Date();
