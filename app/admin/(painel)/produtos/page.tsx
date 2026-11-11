@@ -5,7 +5,6 @@ import { toProduct } from "@/lib/catalog";
 import { db } from "@/lib/db";
 import { brl } from "@/lib/format";
 
-
 export const metadata = { title: "Produtos" };
 
 
