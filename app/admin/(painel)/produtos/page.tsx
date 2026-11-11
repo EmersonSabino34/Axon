@@ -10,7 +10,6 @@ export const metadata = { title: "Produtos" };
 export default async function ProdutosAdmin({ searchParams }: { searchParams: Promise<{ salvo?: string }> }) {
   const { salvo } = await searchParams;
   const since = new Date();
-  
   since.setDate(since.getDate() - 30);
   const [rows, views] = await Promise.all([
     db.product.findMany({ orderBy: [{ sortOrder: "asc" }, { name: "asc" }] }),
