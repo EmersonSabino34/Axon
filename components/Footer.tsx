@@ -3,7 +3,6 @@ import { getProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { Logo } from "./Logo";
 
-
 export async function Footer() {
   const [products, site] = await Promise.all([getProducts(), getSettings()]);
   return (
