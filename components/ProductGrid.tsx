@@ -8,8 +8,7 @@ export function ProductGrid({ products, showFilters = true }: { products: Produc
   const [filter, setFilter] = useState<Format | "todos">("todos");
   const list = filter === "todos" ? products : products.filter((p) => p.format === filter);
 
-  return (
-    
+  return ( 
     <>
       {showFilters && (
         <div className="filters" role="group" aria-label="Filtrar por formato">
