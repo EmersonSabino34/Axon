@@ -11,6 +11,7 @@ export function ProductGrid({ products, showFilters = true }: { products: Produc
   const list = filter === "todos" ? products : products.filter((p) => p.format === filter);
 
   return (
+    
     <>
       {showFilters && (
         <div className="filters" role="group" aria-label="Filtrar por formato">
