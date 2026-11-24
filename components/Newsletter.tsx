@@ -49,8 +49,8 @@ export function Newsletter() {
     <section id="newsletter" className="newsletter" aria-labelledby="newsletter-title">
       <div className="container newsletter__inner">
         <div className="newsletter__intro">
-          <p className="eyebrow eyebrow--light">Newsletter</p>
-          <h2 id="newsletter-title" className="section-title section-title--light">
+          <p className="eyebrow">Newsletter</p>
+          <h2 id="newsletter-title" className="section-title">
             Seja dos primeiros a saber.
           </h2>
           <p className="newsletter__text">
@@ -81,7 +81,7 @@ export function Newsletter() {
               aria-invalid={errors.email ? true : undefined}
               aria-describedby={errors.email ? "newsletter-email-error" : undefined}
             />
-            <button type="submit" className="button button--gold" disabled={state === "sending"}>
+            <button type="submit" className="button button--primary" disabled={state === "sending"}>
               {state === "sending" ? "A validar…" : "Quero novidades"}
             </button>
           </div>

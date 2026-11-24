@@ -46,7 +46,7 @@ export async function SiteFooter({ settings, storeOpen = false }: { settings: Si
           </ul>
         </nav>
 
-        <div className="site-footer__column">
+        <div id="contactos" className="site-footer__column">
           <h2 className="site-footer__heading">Contactos</h2>
           <ContactList contacts={settings.contacts} className="contact-list--footer" />
         </div>
@@ -62,7 +62,7 @@ export async function SiteFooter({ settings, storeOpen = false }: { settings: Si
                     <a href={href}>{page.label}</a>
                   ) : (
                     <span className="legal-pending">
-                      {page.label} <span className="tag tag--pending">Pendente</span>
+                      {page.label} <span className="legal-pending__tag">· pendente</span>
                     </span>
                   )}
                 </li>
@@ -77,6 +77,7 @@ export async function SiteFooter({ settings, storeOpen = false }: { settings: Si
           Entidade responsável:{" "}
           {companyDetails || <span className="pending-text">denominação, NIPC e sede por publicar</span>}
         </p>
+        <p>Imagens de produto ilustrativas: embalagens propostas, design final em aprovação.</p>
         <p>
           © {year} {siteConfig.name}. Todos os direitos reservados.
         </p>

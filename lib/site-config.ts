@@ -78,10 +78,10 @@ export const contactLabels: Record<ContactKey, string> = {
 };
 
 export const navItems = [
-  { href: "#inicio", label: "Início" },
   { href: "#colecao", label: "Coleção" },
+  { href: "#origens", label: "Ingredientes" },
   { href: "#marca", label: "A Marca" },
-  { href: "#perguntas", label: "Perguntas Frequentes" },
+  { href: "#perguntas", label: "Ajuda" },
   { href: "#contactos", label: "Contactos" },
 ];
 

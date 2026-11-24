@@ -59,6 +59,18 @@ export const ArrowIcon = (props: IconProps) => (
   </Icon>
 );
 
+export const PauseIcon = (props: IconProps) => (
+  <Icon {...props}>
+    <path d="M9 6v12M15 6v12" />
+  </Icon>
+);
+
+export const PlayIcon = (props: IconProps) => (
+  <Icon {...props}>
+    <path d="M8 5.5v13l10-6.5-10-6.5z" />
+  </Icon>
+);
+
 export const InfoIcon = (props: IconProps) => (
   <Icon {...props}>
     <circle cx="12" cy="12" r="9" />

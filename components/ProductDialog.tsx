@@ -86,13 +86,42 @@ export function ProductDialog({ product, open, onClose }: ProductDialogProps) {
               {product.name}
             </h2>
             <p className="product-dialog__tagline">{product.tagline}</p>
-            <p className={`status-badge${available ? " status-badge--available" : ""}`}>
-              {available
-                ? storeOpen
-                  ? "Disponível para encomenda"
-                  : "Disponível · As encomendas online ainda não estão ativas"
-                : "Detalhes em preparação · Ainda não disponível para venda"}
-            </p>
+
+            {/* Preço e compra logo a seguir ao nome; a informação completa e os avisos vêm a seguir. */}
+            <div className="product-dialog__buy">
+              <p className={`product-dialog__price${product.priceCents === null ? " is-pending" : ""}`}>
+                {formatPrice(product.priceCents)}
+              </p>
+              <p className={`status-badge${available ? " status-badge--available" : ""}`}>
+                {available
+                  ? storeOpen
+                    ? "Disponível para encomenda"
+                    : "Disponível · As encomendas online ainda não estão ativas"
+                  : "Detalhes em preparação · Ainda não disponível para venda"}
+              </p>
+              <div className="product-dialog__actions">
+                {storeOpen && !available ? (
+                  <button type="button" className="button button--primary" disabled>
+                    Ainda não disponível para encomenda
+                  </button>
+                ) : (
+                  <button type="button" className="button button--primary" onClick={add}>
+                    {storeOpen ? "Adicionar ao carrinho" : "Adicionar ao carrinho (demonstração)"}
+                  </button>
+                )}
+                {quantityInCart > 0 && (
+                  <button type="button" className="button button--outline" onClick={viewCart}>
+                    Ver carrinho ({quantityInCart})
+                  </button>
+                )}
+              </div>
+              <p className="product-dialog__fineprint">
+                {storeOpen
+                  ? "Pagamento por MB WAY, referência Multibanco ou cartão. Portes calculados no checkout."
+                  : "O carrinho serve apenas para testar a experiência de compra. Nenhuma encomenda é processada."}
+              </p>
+            </div>
+
             <p className="product-dialog__summary">{product.description}</p>
             <ProductHighlights product={product} />
 
@@ -141,27 +170,6 @@ export function ProductDialog({ product, open, onClose }: ProductDialogProps) {
               </div>
             )}
 
-            <div className="product-dialog__actions">
-              {storeOpen && !available ? (
-                <button type="button" className="button button--primary" disabled>
-                  Ainda não disponível para encomenda
-                </button>
-              ) : (
-                <button type="button" className="button button--primary" onClick={add}>
-                  {storeOpen ? "Adicionar ao carrinho" : "Adicionar ao carrinho (demonstração)"}
-                </button>
-              )}
-              {quantityInCart > 0 && (
-                <button type="button" className="button button--outline" onClick={viewCart}>
-                  Ver carrinho ({quantityInCart})
-                </button>
-              )}
-            </div>
-            <p className="product-dialog__fineprint">
-              {storeOpen
-                ? "Pagamento por MB WAY, referência Multibanco ou cartão. Portes calculados no checkout."
-                : "O carrinho serve apenas para testar a experiência de compra. Nenhuma encomenda é processada."}
-            </p>
             <p className="sr-only" role="status">
               {announcement}
             </p>

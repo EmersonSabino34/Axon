@@ -29,7 +29,7 @@ export function StickyCta({ fromPriceCents }: { fromPriceCents: number | null })
         <span className="sticky-cta__name">Coleção AXON</span>
         {fromPriceCents !== null && <span className="sticky-cta__price">desde {formatPrice(fromPriceCents)}</span>}
       </p>
-      <a href="#colecao" className="button button--gold sticky-cta__button">
+      <a href="#colecao" className="button button--light sticky-cta__button">
         Ver coleção
       </a>
     </aside>

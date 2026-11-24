@@ -23,25 +23,3 @@ export function ContactList({ contacts, className = "" }: { contacts: SiteSettin
     </dl>
   );
 }
-
-export function Contacts({ settings }: { settings: SiteSettings }) {
-  const published = Object.values(settings.contacts).some(Boolean);
-  return (
-    <section id="contactos" className="section contacts" aria-labelledby="contacts-title">
-      <div className="container contacts__inner">
-        <header className="section-header contacts__header">
-          <p className="eyebrow">Contactos</p>
-          <h2 id="contacts-title" className="section-title">
-            Fale com a AXON
-          </h2>
-          <p className="section-intro">
-            {published
-              ? "Estamos disponíveis pelos contactos oficiais abaixo."
-              : "Os contactos oficiais serão publicados assim que estiverem confirmados. Até lá, esta página não recebe mensagens."}
-          </p>
-        </header>
-        <ContactList contacts={settings.contacts} className="contacts__list" />
-      </div>
-    </section>
-  );
-}

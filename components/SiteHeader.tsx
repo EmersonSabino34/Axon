@@ -7,13 +7,13 @@ import { useCart } from "./CartProvider";
 import { BagIcon, CloseIcon, MenuIcon, UserIcon } from "./LineIcons";
 import { BrandEmblem } from "./BrandEmblem";
 
-const DESKTOP_QUERY = "(min-width: 900px)";
+const DESKTOP_QUERY = "(min-width: 1024px)";
 
 export function SiteHeader() {
   const { count, openCart } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [compact, setCompact] = useState(false);
-  const [activeHref, setActiveHref] = useState(navItems[0].href);
+  const [activeHref, setActiveHref] = useState("");
   const headerRef = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -26,10 +26,10 @@ export function SiteHeader() {
     return () => observer.disconnect();
   }, []);
 
-  // Assinala no menu a secção que está a meio do ecrã.
+  // Assinala no menu a secção que está a meio do ecrã (na área principal, nenhuma).
   useEffect(() => {
-    const sections = navItems
-      .map((item) => document.querySelector<HTMLElement>(item.href))
+    const sections = ["#inicio", ...navItems.map((item) => item.href)]
+      .map((href) => document.querySelector<HTMLElement>(href))
       .filter((section): section is HTMLElement => section !== null);
     const observer = new IntersectionObserver(
       (entries) => {
@@ -124,7 +124,6 @@ export function SiteHeader() {
           </button>
         </div>
       </div>
-      <span className="site-header__progress" aria-hidden="true" />
     </header>
   );
 }

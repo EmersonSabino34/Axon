@@ -76,7 +76,6 @@ export function ProductGallery({ photos, productName, sizes }: ProductGalleryPro
           </div>
         ))}
 
-        <span className="tag tag--mockup gallery__tag">Imagem ilustrativa</span>
         <button type="button" className="gallery__arrow gallery__arrow--prev" onClick={() => go(index - 1)} aria-label="Foto anterior">
           <ChevronLeftIcon />
         </button>

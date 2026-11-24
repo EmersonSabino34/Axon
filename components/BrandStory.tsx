@@ -1,4 +1,4 @@
-import { Botanical } from "./Botanical";
+import { BrandEmblem } from "./BrandEmblem";
 
 const values = [
   { title: "Clareza", text: "Informação escrita para ser compreendida, sem exageros nem promessas." },
@@ -10,39 +10,27 @@ const values = [
 export function BrandStory() {
   return (
     <section id="marca" className="section brand" aria-labelledby="brand-title">
-      <div className="container brand__inner">
-        <div className="brand-plate" aria-hidden="true">
-          <div className="brand-plate__frame">
-            <Botanical className="brand-plate__sprig brand-plate__sprig--top" />
-            <Botanical className="brand-plate__sprig brand-plate__sprig--bottom" />
-            <span className="brand-plate__word">AXON</span>
-            <span className="brand-plate__rule" />
-            <span className="brand-plate__slogan">Uma Vida Extraordinária</span>
-          </div>
-        </div>
-
-        <div className="brand__content">
-          <p className="eyebrow">A Marca</p>
-          <h2 id="brand-title" className="section-title">
-            Menos ruído. Mais intenção.
+      <div className="container">
+        <div className="brand__intro">
+          <BrandEmblem variant="full" className="brand__emblem" />
+          <p className="eyebrow eyebrow--light">A Marca</p>
+          <h2 id="brand-title" className="section-title section-title--light">
+            Menos ruído. <em>Mais intenção.</em>
           </h2>
           <p className="brand__text">
-            A AXON procura unir uma identidade visual intemporal a uma experiência digital clara. Cada detalhe — da
-            embalagem à página de produto — deve ajudar o cliente a encontrar informação compreensível e a tomar
-            decisões informadas.
+            A AXON une uma identidade visual intemporal a uma experiência clara. Cada detalhe — da embalagem à página
+            de produto — existe para o ajudar a encontrar informação compreensível e a escolher com confiança.
           </p>
-          <ol className="brand-values">
-            {values.map((value, index) => (
-              <li key={value.title} className="brand-values__item">
-                <span className="brand-values__number" aria-hidden="true">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <h3 className="brand-values__title">{value.title}</h3>
-                <p className="brand-values__text">{value.text}</p>
-              </li>
-            ))}
-          </ol>
         </div>
+
+        <ol className="brand-values">
+          {values.map((value) => (
+            <li key={value.title} className="brand-values__item">
+              <h3 className="brand-values__title">{value.title}</h3>
+              <p className="brand-values__text">{value.text}</p>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

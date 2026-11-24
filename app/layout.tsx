@@ -1,17 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Montserrat, Playfair_Display } from "next/font/google";
+import { Instrument_Serif, Manrope } from "next/font/google";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+// Serifa de título (só peso 400) e sans de texto: o contraste entre as duas faz o tom editorial da loja.
+const display = Instrument_Serif({
+  variable: "--font-display",
   subsets: ["latin"],
+  weight: "400",
   style: ["normal", "italic"],
   display: "swap",
 });
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
+const text = Manrope({
+  variable: "--font-text",
   subsets: ["latin"],
   display: "swap",
 });
@@ -39,7 +41,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-PT" className={`${playfair.variable} ${montserrat.variable}`}>
+    <html lang="pt-PT" className={`${display.variable} ${text.variable}`}>
       <body>{children}</body>
     </html>
   );

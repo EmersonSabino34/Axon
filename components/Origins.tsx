@@ -49,24 +49,23 @@ export function Origins() {
 
         <ul className="origins__list">
           {items.map((item) => (
-            <li key={item.slug} className="origin-card">
-              <div className="origin-card__media">
+            <li key={item.slug} className="origin">
+              <div className="origin__media">
                 <Image
                   src={item.photo.src}
                   alt={item.photo.alt}
                   fill
                   sizes="(max-width: 899px) 100vw, 600px"
-                  className="origin-card__image"
+                  className="origin__image"
                 />
-                <span className="tag tag--mockup origin-card__tag">Maqueta</span>
               </div>
-              <div className="origin-card__body">
-                <p className="origin-card__kicker">{item.kicker}</p>
-                <h3 className="origin-card__title">{item.title}</h3>
-                <p className="origin-card__text">{item.text}</p>
+              <div className="origin__body">
+                <p className="origin__kicker">{item.kicker}</p>
+                <h3 className="origin__title">{item.title}</h3>
+                <p className="origin__text">{item.text}</p>
                 <button
                   type="button"
-                  className="button button--gold origin-card__button"
+                  className="button button--primary"
                   aria-haspopup="dialog"
                   onClick={() => openDetails(item.product)}
                 >

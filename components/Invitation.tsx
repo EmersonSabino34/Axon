@@ -26,11 +26,11 @@ export function Invitation({ storeOpen = false }: { storeOpen?: boolean }) {
             : "A coleção está quase pronta. Deixe o seu e-mail e saiba antes de todos quando abrirmos."}
         </p>
         <div className="invitation__actions">
-          <a href="#colecao" className="button button--gold button--glow">
+          <a href="#colecao" className="button button--light">
             Escolher o meu AXON
           </a>
           {!storeOpen && (
-            <a href="#newsletter" className="button button--outline-light">
+            <a href="#newsletter" className="button button--ghost-light">
               Avisem-me no lançamento
             </a>
           )}
