@@ -1,8 +1,46 @@
+<div align="center">
+
 # AXON — Uma Vida Extraordinária
 
-Site da marca AXON com loja de demonstração, contas de cliente e painel de gestão:
+**Loja online, contas de cliente, checkout com MB WAY, Multibanco e cartão, e painel de gestão**
 
-- **Loja (`/`):** página pensada para despertar o desejo de compra — área principal escura com a fotografia da coleção (brilho dourado e partículas animadas), faixa dourada em movimento, «Ao pormenor» (a fotografia muda ao percorrer a página), coleção com filtros e botão de adicionar ao carrinho em cada cartão, um slide por produto com 6 fotografias, «Ingredientes com história» (Própolis e Cravinho), A Marca, newsletter, perguntas frequentes, convite final, contactos e rodapé legal. No telemóvel, um atalho fixo leva à coleção. As animações respeitam a opção «reduzir movimento» do sistema.
+![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-node%3Asqlite-003B57?logo=sqlite&logoColor=white)
+![ifthenpay](https://img.shields.io/badge/Pagamentos-ifthenpay-1F4E3D)
+![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A5%2022.13-5FA04E?logo=nodedotjs&logoColor=white)
+
+<img src="docs/capturas/inicio.webp" alt="Página inicial da loja AXON" width="100%">
+
+</div>
+
+---
+
+## Índice
+
+- [Sobre o projeto](#sobre-o-projeto)
+- [Capturas de ecrã](#capturas-de-ecrã)
+  - [Loja](#loja)
+  - [Entrar, criar conta e «A minha conta»](#entrar-criar-conta-e-a-minha-conta)
+  - [Compra e pagamento](#compra-e-pagamento)
+  - [Painel de gestão](#painel-de-gestão)
+  - [No telemóvel](#no-telemóvel)
+- [Como executar no Visual Studio Code](#como-executar-no-visual-studio-code)
+- [Pagamentos (MB WAY, Multibanco e cartão)](#pagamentos-mb-way-multibanco-e-cartão)
+- [Base de dados e contas](#base-de-dados-e-contas)
+- [O que se edita no painel e no código](#o-que-se-edita-no-painel-e-no-código)
+- [Estrutura](#estrutura)
+- [Antes de abrir a loja ao público](#antes-de-abrir-a-loja-ao-público)
+- [Versões do projeto](#versões-do-projeto)
+
+---
+
+## Sobre o projeto
+
+Site da marca AXON com loja, contas de cliente e painel de gestão, pensado para Portugal (com possível expansão para a União Europeia):
+
+- **Loja (`/`):** página única, minimalista e pensada para despertar o desejo de compra. Abre com uma área principal escura: título, botão para a coleção, preço «desde» e, ao lado, um produto de cada vez (o frasco funde-se com o verde do fundo, com nome, preço e «Ver produto»; avança sozinho, com pausa, barras de progresso clicáveis e deslizar no telemóvel, onde o produto aparece logo a seguir ao título). Segue-se a coleção (filtros, cartões com nome e preço lado a lado e botão de adicionar sobre a fotografia), «Ao pormenor» (três colunas só de texto), «Ingredientes com história» (Própolis e Cravinho), A Marca, perguntas frequentes, convite final, newsletter e rodapé com contactos e informação legal. A ficha de cada produto mostra o preço e o botão de compra logo a seguir ao nome. No telemóvel, um atalho fixo leva à coleção. As animações respeitam a opção «reduzir movimento» do sistema.
 - **Contas:** criar conta (`/criar-conta`), entrar (`/entrar`) e «A minha conta» (`/conta`), onde o cliente altera o nome e a palavra-passe ou elimina a conta.
 - **Compra (`/checkout`):** dados do cliente, morada em Portugal, NIF opcional e pagamento por **MB WAY**, **Multibanco (entidade e referência)** ou **cartão**. Página da encomenda (`/encomenda/<número>`) com as instruções de pagamento, atualizada sozinha quando o pagamento entra.
 - **Painel (`/painel`, só administradores):** visão geral (faturação, encomendas, clientes, gráfico de novos clientes), encomendas (estado, envio com nota, cancelamento, confirmação manual), produtos (preço, stock, estado e textos), clientes, lista de lançamento e definições (loja online, contactos, empresa e páginas legais).
@@ -10,6 +48,93 @@ Site da marca AXON com loja de demonstração, contas de cliente e painel de ges
 Feito em **Next.js 16** (App Router, React 19, TypeScript) com CSS próprio. A base de dados é o SQLite incluído no Node.js: não há serviços pagos nem chaves externas.
 
 > **Estado:** pré-lançamento. As encomendas estão **fechadas por omissão** e só abrem em Painel › Definições › Loja online quando todos os requisitos estão cumpridos. Sem chaves da ifthenpay, os pagamentos funcionam em **modo de teste** (simulados). As contas e as encomendas guardam dados pessoais — publique a Política de Privacidade antes de abrir ao público.
+
+---
+
+## Capturas de ecrã
+
+> As capturas foram feitas numa base de dados de demonstração, com pagamentos em **modo de teste** e clientes fictícios (`@exemplo.pt`). A identificação da empresa e os contactos que aparecem são valores de exemplo.
+
+### Loja
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/capturas/inicio.webp" alt="Início"><br><sub><b>Início</b>: área principal com um produto de cada vez, preço e «Ver produto».</sub></td>
+    <td width="50%"><img src="docs/capturas/colecao.webp" alt="Coleção"><br><sub><b>Coleção</b>: filtros por formato e cartões com nome, preço e botão de adicionar.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/capturas/ficha-do-produto.webp" alt="Ficha do produto"><br><sub><b>Ficha do produto</b>: galeria de fotografias, preço, compra e informação disponível.</sub></td>
+    <td width="50%"><img src="docs/capturas/carrinho.webp" alt="Carrinho"><br><sub><b>Carrinho</b>: quantidades, subtotal e «Finalizar encomenda».</sub></td>
+  </tr>
+</table>
+
+<details>
+<summary><b>Ver a página inicial completa</b></summary>
+<br>
+<img src="docs/capturas/pagina-inicial-completa.webp" alt="Página inicial completa" width="100%">
+</details>
+
+### Entrar, criar conta e «A minha conta»
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/capturas/entrar.webp" alt="Entrar"><br><sub><b>Entrar</b> (<code>/entrar</code>): e-mail e palavra-passe.</sub></td>
+    <td width="50%"><img src="docs/capturas/criar-conta.webp" alt="Criar conta"><br><sub><b>Criar conta</b> (<code>/criar-conta</code>): nome, e-mail, palavra-passe e aceitação dos termos.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/capturas/a-minha-conta.webp" alt="A minha conta"><br><sub><b>A minha conta</b> (<code>/conta</code>): encomendas, dados, palavra-passe e eliminação da conta.</sub></td>
+    <td width="50%"><img src="docs/capturas/a-minha-conta-nova.webp" alt="Conta acabada de criar"><br><sub><b>Conta nova</b>: o que o cliente vê logo depois de se registar.</sub></td>
+  </tr>
+</table>
+
+### Compra e pagamento
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/capturas/checkout.webp" alt="Checkout"><br><sub><b>Checkout</b> (<code>/checkout</code>): contacto, morada em Portugal, NIF opcional e método de pagamento.</sub></td>
+    <td width="50%"><img src="docs/capturas/encomenda-multibanco.webp" alt="Referência Multibanco"><br><sub><b>Multibanco</b>: entidade, referência e montante, com botões de copiar.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/capturas/pagamento-cartao-teste.webp" alt="Pagamento com cartão em modo de teste"><br><sub><b>Cartão (modo de teste)</b>: simula a página segura do banco.</sub></td>
+    <td width="50%"><img src="docs/capturas/encomenda-paga.webp" alt="Encomenda paga"><br><sub><b>Encomenda paga</b>: a página atualiza-se sozinha quando o pagamento entra.</sub></td>
+  </tr>
+</table>
+
+### Painel de gestão
+
+<img src="docs/capturas/painel-visao-geral.webp" alt="Visão geral do painel" width="100%">
+<p align="center"><sub><b>Visão geral</b> (<code>/painel</code>): preparação para o lançamento, faturação, encomendas, clientes, gráfico de novos clientes, coleção e dados da loja.</sub></p>
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/capturas/painel-encomendas.webp" alt="Encomendas"><br><sub><b>Encomendas</b>: filtros por estado, com cliente, método de pagamento e total de cada encomenda.</sub></td>
+    <td width="50%"><img src="docs/capturas/painel-encomenda.webp" alt="Detalhe da encomenda"><br><sub><b>Encomenda</b>: artigos, pagamento, envio com nota para o cliente, cancelamento e histórico.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/capturas/painel-produtos.webp" alt="Produtos"><br><sub><b>Produtos</b>: preço, stock, estado e última alteração.</sub></td>
+    <td width="50%"><img src="docs/capturas/painel-editar-produto.webp" alt="Editar produto"><br><sub><b>Editar produto</b>: venda, apresentação e dados por confirmar.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/capturas/painel-clientes.webp" alt="Clientes"><br><sub><b>Clientes</b>: pesquisa, exportação CSV e eliminação de contas.</sub></td>
+    <td width="50%"><img src="docs/capturas/painel-lancamento.webp" alt="Lançamento"><br><sub><b>Lançamento</b>: o que falta confirmar antes de vender.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/capturas/painel-definicoes.webp" alt="Definições"><br><sub><b>Definições</b>: loja online, portes, validade do Multibanco, contactos, empresa e páginas legais.</sub></td>
+    <td width="50%"></td>
+  </tr>
+</table>
+
+### No telemóvel
+
+<table>
+  <tr>
+    <td width="33%"><img src="docs/capturas/telemovel-inicio.webp" alt="Início no telemóvel"><br><sub><b>Início</b></sub></td>
+    <td width="33%"><img src="docs/capturas/telemovel-colecao.webp" alt="Coleção no telemóvel"><br><sub><b>Coleção</b></sub></td>
+    <td width="33%"><img src="docs/capturas/telemovel-entrar.webp" alt="Entrar no telemóvel"><br><sub><b>Entrar</b></sub></td>
+  </tr>
+</table>
+
+---
 
 ## Como executar no Visual Studio Code
 
@@ -80,18 +205,18 @@ O checkout usa a **ifthenpay**, que junta os três métodos num só contrato. Os
 | Tarefas antes do lançamento | Painel › Lançamento (lista em [lib/launch-checklist.ts](lib/launch-checklist.ts)) |
 | Nome, formato, embalagem e avisos regulamentares dos produtos | [lib/collection.ts](lib/collection.ts) |
 | Textos de «Ao pormenor», «Ingredientes com história» e do convite final | [components/Ritual.tsx](components/Ritual.tsx), [components/Origins.tsx](components/Origins.tsx), [components/Invitation.tsx](components/Invitation.tsx) |
-| Palavras da faixa dourada | [components/Marquee.tsx](components/Marquee.tsx) |
 | Fotografias (6 por produto) | `public/produtos/<produto>/1.webp` … `6.webp` |
-| Fotografia da coleção na área principal | `public/marca/colecao-axon.webp` |
+| Fotografia da coleção (convite final e páginas de acesso) | `public/marca/colecao-axon.webp` |
 | Logótipo (emblema) | [components/BrandEmblem.tsx](components/BrandEmblem.tsx) e [components/brand-paths.ts](components/brand-paths.ts); opções em `brandConfig` ([lib/site-config.ts](lib/site-config.ts)) |
 | Newsletter e indexação nos motores de pesquisa | [lib/site-config.ts](lib/site-config.ts) |
-| Estilos | [app/globals.css](app/globals.css), [app/contas.css](app/contas.css), [app/painel/painel.css](app/painel/painel.css) |
+| Estilos (cores, tipos de letra e espaçamentos nos tokens do início de `globals.css`) | [app/globals.css](app/globals.css), [app/contas.css](app/contas.css), [app/painel/painel.css](app/painel/painel.css) |
+| Tipos de letra (Instrument Serif nos títulos, Manrope no texto) | [app/layout.tsx](app/layout.tsx) |
 
 - **Preços e estado:** os preços de lançamento estão em `lib/collection.ts` (`priceCents`, em cêntimos) e podem ser alterados no painel; um valor gravado no painel prevalece sobre o do código. Um produto só pode ficar «Disponível» com preço definido. Mesmo disponível, as encomendas online continuam inativas; o carrinho calcula o subtotal quando todos os artigos têm preço.
 - **Textos:** a frase, a descrição e os pontos fortes falam da experiência, da embalagem e da tradição de cada ingrediente, sem dizer o que o produto faz no organismo. O campo «Alegações validadas» é só para alegações autorizadas e validadas por quem responde pela regulamentação; aparece nos slides e na ficha com o título «O que faz».
 - **Fotografias:** as atuais foram recortadas da imagem-resumo dos 8 produtos. A foto 1 tem qualidade aceitável; as fotos 2 a 6 vêm das miniaturas (cerca de 44 × 66 píxeis) e ficam desfocadas. Substitua-as pelos originais com os mesmos nomes (de preferência com 1200 px ou mais no lado maior). A ordem e as legendas estão em `photoViews`, em `lib/collection.ts`.
 - **Fotografia da coleção:** é uma composição feita a partir das fotos 1 de cinco produtos, com uma faixa de fundo no topo para o logótipo, que o site coloca por cima. Pode ser trocada por uma fotografia de grupo real com as mesmas proporções (1380 × 906).
-- **Logótipo:** emblema vetorial desenhado a partir do logótipo da marca — disco verde, anel dourado duplo, «AXON» com o raminho a nascer do «O» e, na versão completa, «Uma Vida Extraordinária». As letras são contornos do tipo de letra Cinzel (SIL Open Font License) e as cores vêm dos tokens do site (`--forest`, `--gold`, `--sage`…). A versão compacta está nos cabeçalhos; a completa na fotografia principal, no rodapé e nas páginas de acesso. A linha «Suplementos naturais» e o «®» estão desligados em `brandConfig`: ative a primeira só depois de confirmada a classificação de todos os produtos, e o «®» só com a marca registada. Quando houver o ficheiro oficial, substitua `BrandEmblem.tsx`, `app/icon.svg` e `app/favicon.ico`.
+- **Logótipo:** emblema vetorial desenhado a partir do logótipo da marca — disco verde, anel dourado duplo, «AXON» com o raminho a nascer do «O» e, na versão completa, «Uma Vida Extraordinária». As letras são contornos do tipo de letra Cinzel (SIL Open Font License) e as cores vêm dos tokens do site (`--forest`, `--gold`, `--sage`…). A versão compacta está nos cabeçalhos; a completa em «A Marca», no rodapé e na página não encontrada. A linha «Suplementos naturais» e o «®» estão desligados em `brandConfig`: ative a primeira só depois de confirmada a classificação de todos os produtos, e o «®» só com a marca registada. Quando houver o ficheiro oficial, substitua `BrandEmblem.tsx`, `app/icon.svg` e `app/favicon.ico`.
 - **Páginas legais:** crie as páginas (ex.: `app/privacidade/page.tsx`) e indique o caminho em Painel › Definições. Sem endereço, o rodapé mostra «Pendente».
 - **Newsletter:** defina `newsletter.endpoint` com um Route Handler próprio que fale com o serviço escolhido no servidor. As chaves ficam em variáveis de ambiente do servidor, nunca no navegador.
 - **Indexação:** `indexable: false` mantém o site fora dos motores de pesquisa. Mude para `true` só no lançamento. O painel nunca é indexado.
@@ -113,6 +238,7 @@ lib/
   site-config.ts           configuração fixa e valores de partida das definições
   server/                  só no servidor: base de dados, sessões, palavras-passe, utilizadores, catálogo e definições
 data/axon.db               base de dados (criada automaticamente, fora do Git)
+docs/capturas/            capturas de ecrã usadas neste README
 ```
 
 ## Antes de abrir a loja ao público
@@ -147,3 +273,15 @@ A loja destina-se a Portugal, com possível expansão para a União Europeia. A 
 Enquanto as encomendas estiverem fechadas, o botão «Finalizar encomenda» mostra apenas o aviso do que falta configurar, e o checkout explica que a loja ainda não está aberta.
 
 O texto do site evita alegações de prevenção, tratamento ou cura de doenças e não garante resultados (emagrecimento, desintoxicação, efeitos cognitivos ou sobre a libido). Qualquer texto novo deve seguir a mesma regra.
+
+
+## Versões do projeto
+
+Este repositório guarda duas versões do site da AXON, em ramos separados:
+
+| Ramo | Versão | Vendas |
+| --- | --- | --- |
+| [`versao-portugal`](../../tree/versao-portugal) | **Portugal / União Europeia** (pt-PT): esta versão | Loja online com MB WAY, Multibanco e cartão (ifthenpay) |
+| [`main`](../../tree/main) | **Brasil** (pt-BR) | Pelo WhatsApp, com pedidos registados no painel |
+
+As duas não se misturam: cada uma tem o seu código, o seu README e as suas capturas.
